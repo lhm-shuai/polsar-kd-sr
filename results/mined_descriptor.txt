@@ -1,0 +1,26 @@
+Low-complexity descriptor (the paper's general-purpose operator)
+--------------------------------------------------------------
+    Pmv = exp( -c / (Pm + Pv) ),   c = 0.20430441
+
+    c is the mean of the five seeds reported in Table II:
+        42 -> 0.214   123 -> 0.210   211 -> 0.211   666 -> 0.204   789 -> 0.209
+        mean = 0.2098, maximum relative deviation 2.7%
+
+    Node complexity 6; three floating-point operations per pixel.
+
+Note on what this is worth
+--------------------------
+exp(-c/x) is strictly monotone in x = Pm + Pv, so this descriptor has exactly the
+same AUC and essentially the same accuracy as the raw sum Pm + Pv. Its value is
+that it is closed form, costs three operations, and maps to (0, 1) with the
+saturation behaviour of a membership probability - not that it ranks better.
+scripts/04_evaluate.py prints both so the comparison is always visible.
+
+
+High-complexity descriptor (Table III, Psmv)
+--------------------------------------------
+    Psmv = sin(sin(sin(cos((exp(Pv*(-0.72197366 - Ps)) / (Pm^2 + 1.0250757))^8
+           + 0.48293668))) / 0.61469054)^8 / 0.49011374)^8
+
+    Reproduced verbatim from the archived run; see src/evaluate.py::psmv.
+    Higher AUC (0.9867) but loses global monotonicity and interpretability.

@@ -1,0 +1,10 @@
+# Ultralytics dataset description. `path` is the directory written by
+#   python scripts/05_detector.py build --channels Pm,Pv,Ps --out <path>
+# The three channels are the three input images per scene, stacked in the order
+# given on the command line.
+path: ../data/yolo_PmPvPs
+train: images/train
+val: images/val
+test: images/test
+nc: 1
+names: ['ship']

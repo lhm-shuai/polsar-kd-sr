@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper."
+title: "PolSAR Ship Detection by Knowledge-Distillation-Guided Symbolic Regression"
+abstract: >-
+  Reference implementation of a feedback learning-based polarimetric scattering
+  representation for PolSAR ship detection: a lightweight MLP teacher distils
+  pixel-level hard labels into a continuous ship-membership surface, and an
+  evolutionary symbolic-regression student fits it under an explicit
+  accuracy-complexity trade-off.
+authors:
+  - family-names: Liu
+    given-names: Haomiao
+  - family-names: Quan
+    given-names: Sinong
+  - family-names: Cai
+    given-names: Zhihao
+  - family-names: Xing
+    given-names: Shiqi
+  - family-names: Li
+    given-names: Yongzhen
+license: MIT
+repository-code: "https://github.com/lhm-shuai/polsar-kd-sr"
+keywords:
+  - PolSAR
+  - ship detection
+  - symbolic regression
+  - knowledge distillation
+  - interpretability

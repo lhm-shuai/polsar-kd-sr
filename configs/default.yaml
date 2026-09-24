@@ -1,0 +1,92 @@
+# Configuration for the PolSAR KD-guided symbolic regression pipeline.
+#
+# Every value here is the value the experiments in the paper used. The PySR
+# block was read back from the archived PySRRegressor checkpoint of the run
+# behind Fig. 7 and Table I, not retyped from the manuscript.
+
+# --------------------------------------------------------------------------- #
+# Paths. Point these at your own copy of the PSDD dataset and at a scratch dir.
+# The dataset itself is third-party and is NOT redistributed with this code -
+# see the README for where to obtain it.
+# --------------------------------------------------------------------------- #
+paths:
+  # Stage I(a) output: one .npy per scene, shape (H, W, 3)
+  # channels are [Pm, Pv, Ps] = [R, G, B] of the component rendering
+  components_dir: data/四成分
+  # Stage I(b) output: one 8-bit PNG per scene, 255 = ship, 0 = background
+  masks_dir: data/分割舰船位置矩阵
+  # VOC-style XML annotations, needed only by the detector dataset builder
+  annotations_dir: data/Annotations
+  # everything the pipeline writes goes here
+  work_dir: work
+
+# --------------------------------------------------------------------------- #
+# Stage I - pixel sampling and the scene-level split
+# --------------------------------------------------------------------------- #
+sampling:
+  max_ship_per_scene: 5000     # cap on ship pixels drawn from one scene
+  bg_ratio: 2.0                # background : ship
+  test_size: 0.20              # scenes held out for test
+  val_split: 0.10              # of the remaining training pixels
+  seed: 666
+
+# --------------------------------------------------------------------------- #
+# Stage II - lightweight teacher
+# --------------------------------------------------------------------------- #
+teacher:
+  input_dim: 3                 # (Ps, Pm, Pv)
+  hidden_dims: [64, 64]
+  activation: relu
+  output_dim: 1                # sigmoid
+  optimizer: adam
+  lr: 1.0e-3
+  batch_size: 256
+  epochs: 100
+  loss: bce
+  select: best_val_accuracy    # checkpoint rule reported in the paper
+
+# --------------------------------------------------------------------------- #
+# Stage III - symbolic regression (PySR / NSGA-II)
+# --------------------------------------------------------------------------- #
+symbolic_regression:
+  niterations: 300             # generations
+  populations: 100             # independent islands
+  population_size: 27          # individuals per island
+  maxsize: 30                  # expression size cap (nodes)
+  maxdepth: null               # no global tree-depth cap; see constraints
+  binary_operators: ["+", "-", "*", "/"]
+  unary_operators: ["square", "sqrt", "log", "exp", "sin", "cos"]
+  # per-operator nesting limits; this is what "depth of 5" refers to
+  constraints:
+    log: 5
+    sqrt: 5
+    exp: 5
+    "/": [-1, 5]
+  elementwise_loss: "L2DistLoss()"
+  model_selection: best
+  batching: true
+  batch_size: 500
+  procs: 8
+  random_state: 666
+  # the paper repeats the whole search with these five seeds
+  seeds: [42, 123, 211, 666, 789]
+
+# --------------------------------------------------------------------------- #
+# Detection stage - Ultralytics YOLO, per the paper's Section III-A
+# --------------------------------------------------------------------------- #
+detector:
+  data_yaml: configs/detector_data.yaml
+  model: yolov8n.yaml          # from scratch, no COCO pretraining
+  epochs: 300
+  imgsz: 640
+  batch: 8
+  optimizer: AdamW
+  single_cls: true
+  device: 0
+  seed: 0
+  # the eight architectures compared in Table VI
+  architectures:
+    single_stage: [yolov8n.yaml, yolov11n.yaml, yolov12n.yaml, yolo26.yaml,
+                   retinanet_r50_fpn_1x_coco.py, ssd300_coco.py,
+                   paa_r50_fpn_1x_coco.py]
+    two_stage: [faster_rcnn_r50_fpn_1x_coco.py]

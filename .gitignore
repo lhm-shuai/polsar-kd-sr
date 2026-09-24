@@ -1,0 +1,21 @@
+# data and derived artefacts - never commit these
+data/
+work/
+*.npy
+*.mat
+*.pt
+*.pth
+*.zip
+
+# runs
+runs/
+outputs/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Julia/pysr scratch
+.julia/
