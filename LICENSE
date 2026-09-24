@@ -28,7 +28,7 @@ Third-party components
   an installed dependency. Redistributing or modifying Ultralytics source in
   your own tree places that tree under the AGPL.
 
-* matlab/yamaguchi_4components_T3.m is the authors' own Yamaguchi four-component
-  implementation and retains its original attribution header.
+* matlab/yamaguchi_4components_T3.m implements the published Yamaguchi
+  four-component decomposition. The method is attributed in the file header.
 
 * The PSDD dataset is third-party and is not distributed here.

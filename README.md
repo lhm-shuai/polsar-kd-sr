@@ -173,8 +173,8 @@ fronts, so no reported expression contains it.
 - **Ultralytics** (YOLO training) is **AGPL-3.0**. It is used here as an
   installed dependency, not vendored; if you copy Ultralytics source into your
   own tree, the AGPL applies to your tree.
-- **`matlab/yamaguchi_4components_T3.m`** is the co-author's own implementation
-  and carries its original attribution header.
+- **`matlab/yamaguchi_4components_T3.m`** implements the published Yamaguchi
+  four-component decomposition; the method is cited in the file header.
 - **PSDD** has its own terms. Do not redistribute the dataset from this
   repository.
 

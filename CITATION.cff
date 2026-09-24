@@ -10,14 +10,16 @@ abstract: >-
 authors:
   - family-names: Liu
     given-names: Haomiao
+    affiliation: "National University of Defense Technology, Changsha, China"
+    email: liuhaomiao@nudt.edu.cn
   - family-names: Quan
     given-names: Sinong
+    affiliation: "National University of Defense Technology, Changsha, China"
+    email: quansinong13@nudt.edu.cn
   - family-names: Cai
     given-names: Zhihao
-  - family-names: Xing
-    given-names: Shiqi
-  - family-names: Li
-    given-names: Yongzhen
+    affiliation: "National University of Defense Technology, Changsha, China"
+    email: cai_zhihao23@nudt.edu.cn
 license: MIT
 repository-code: "https://github.com/lhm-shuai/polsar-kd-sr"
 keywords:

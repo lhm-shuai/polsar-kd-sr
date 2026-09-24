@@ -12,10 +12,10 @@ function [ Podd,Pdbl,Pvol,Phel ] = yamaguchi_4components_T3( T11,T12,T13,T22,T23
 %          Pvol--体散射分量功率(注意为M*N的矩阵!)
 %          Phel--螺旋体分量功率（注意为M*N的矩阵!）
 
-% Author  : Sinong Quan
-% Creation: 2016.11.02
-% Update: 2016.04.07
-% 已完成
+% Method: Y. Yamaguchi, T. Moriyama, M. Ishido, and H. Yamada, "Four-component
+%         scattering model for polarimetric SAR image decomposition," IEEE Trans.
+%         Geosci. Remote Sens., vol. 43, no. 8, pp. 1699-1706, Aug. 2005.
+%         (reference [27] of the accompanying paper)
 
 eps = 1e-15;
 
