@@ -184,8 +184,7 @@ fronts, so no reported expression contains it.
 @article{liu_polsar_kdsr,
   title  = {Feedback Learning-Based Polarimetric Scattering Representation
             for PolSAR Ship Detection},
-  author = {Liu, Haomiao and Quan, Sinong and Cai, Zhihao and Xing, Shiqi and
-            Li, Yongzhen},
+  author = {Liu, Haomiao and Quan, Sinong and Cai, Zhihao},
   note   = {Preprint}
 }
 ```
