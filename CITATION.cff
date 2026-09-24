@@ -22,6 +22,10 @@ authors:
     email: cai_zhihao23@nudt.edu.cn
 license: MIT
 repository-code: "https://github.com/lhm-shuai/polsar-kd-sr"
+identifiers:
+  - type: doi
+    value: "10.6084/m9.figshare.33987049"
+    description: "Archived release of this software"
 keywords:
   - PolSAR
   - ship detection
