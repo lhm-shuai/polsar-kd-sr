@@ -90,3 +90,10 @@ detector:
                    retinanet_r50_fpn_1x_coco.py, ssd300_coco.py,
                    paa_r50_fpn_1x_coco.py]
     two_stage: [faster_rcnn_r50_fpn_1x_coco.py]
+
+# --- intelligent-assists-general detection (Section II-C) --------------
+assist:
+  c: 0.21                 # fitted constant of the descriptor
+  threshold: 0.55         # T_d, chosen on the training set by the Youden criterion
+  min_area: 12            # A_min, smallest annotated ship area in the training set
+  keep_unrefined: true    # fall back to the detector box when the mask is empty

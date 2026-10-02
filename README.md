@@ -129,6 +129,37 @@ python scripts/05_detector.py train --data-yaml configs/detector_data.yaml \
 
 ---
 
+### Comparisons added in the revision
+
+| Script | Produces |
+|---|---|
+| `scripts/07_operators.py` | Table VI: the descriptor vs PMS / SPAN / MPWF / PNF / RS / Rank-1 / CA-CFAR |
+| `scripts/09_tcr.py` | Table VII: target-to-clutter ratio per representation, in dB |
+| `scripts/08_transfer.py` | Table XV: zero-shot transfer to the IPSD dataset |
+| `results/*.json` | the measured numbers behind Tables VI, VII, XIV and XV |
+
+`src/decomposition.py` is a line-by-line Python port of
+`matlab/yamaguchi_4components_T3.m` (mode 0) that the comparison scripts build
+on. It was checked against the MATLAB function on the same block of GF_3_064:
+the four components agree to a maximum absolute difference of 3e-18, i.e. float64
+rounding.
+
+Notes for the cross-dataset experiment (`08_transfer.py`):
+
+* IPSD's nine-band TIFs hold the polarimetric matrix in the same element order
+  the decomposition expects, `[C11, Re C12, Im C12, Re C13, Im C13, C22,
+  Re C23, Im C23, C33]`. The order was verified on the data itself: the three
+  diagonal bands are non-negative and the assembled 3x3 matrices are positive
+  semi-definite for 100% of pixels, while every alternative order fails.
+* The descriptor's constant is tied to the power scale it was mined in, so the
+  transfer applies **one scalar calibration**: the median of (Pm+Pv) over IPSD
+  is matched to PSDD's (1.24e-3 -> 1.60e-2). Neither the expression nor its
+  constant changes.
+* IPSD ships box annotations only. The comparison therefore uses tight box cores
+  (3-pixel erosion) as positives and an 8-pixel guard band around the boxes as
+  negatives, and PSDD is re-evaluated under the same protocol so the two columns
+  of Table XV are like-for-like.
+
 ## Three things to know before you compare numbers
 
 **1. The low-complexity descriptor has the same AUC as the raw sum.**
