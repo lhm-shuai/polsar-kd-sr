@@ -29,8 +29,25 @@ from scipy import ndimage
 
 WORK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, WORK)
-DS = os.environ.get('PSDD_COMPOSITE', r'D:\雷达\数据库\PSDDv1.0\论文所用数据集\四成分jpg')
-MASK = os.environ.get('PSDD_MASKS', r'D:\雷达\数据库\PSDDv1.0\论文所用数据集\位置矩阵\总')
+# --------------------------------------------------------------------------- #
+# dataset paths, from configs/default.yaml (override with --config)
+# --------------------------------------------------------------------------- #
+def _load_paths():
+    import argparse
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from src import config as _cfg
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--config", default=None, help="YAML to read (default: configs/default.yaml)")
+    ap.add_argument("--combination", default="PmPvPs",
+                    help="which tile dataset under paths.tiles_dir to evaluate")
+    args, _ = ap.parse_known_args()
+    c = _cfg.load(args.config)["paths"]
+    return c, args.combination
+
+
+_P, _COMBO = _load_paths()
+DS = os.path.join(_P["tiles_dir"], _COMBO)
+MASK = _P["tile_masks_dir"]
 
 def load_split(name):
     with io.open(os.path.join(os.path.dirname(DS), "%s.txt" % name), encoding="utf-8") as fh:
@@ -54,7 +71,7 @@ def consistent_tiles(cache, margin=1.0):
 
 
 
-ROOT = r"D:\雷达\数据库\PSDDv1.0\论文所用数据集"
+ROOT = _P['tiles_dir']
 GUARD = 8                      # pixels of guard band between target and clutter
 OUT = os.path.dirname(os.path.abspath(__file__))
 CHANNELS = ["Ps", "Pm", "Pv", "Pmv", "Psmv"]

@@ -36,9 +36,28 @@ sys.path.insert(0, WORK)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from decomposition import c3_to_t3, yamaguchi4_mode0     # noqa: E402
 from classic_ops import tile_origins                    # noqa: E402
+# --------------------------------------------------------------------------- #
+# dataset paths, from configs/default.yaml (override with --config)
+# --------------------------------------------------------------------------- #
+def _load_paths():
+    import argparse
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from src import config as _cfg
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--config", default=None, help="YAML to read (default: configs/default.yaml)")
+    ap.add_argument("--combination", default="PmPvPs",
+                    help="which tile dataset under paths.tiles_dir to evaluate")
+    args, _ = ap.parse_known_args()
+    c = _cfg.load(args.config)["paths"]
+    return c, args.combination
 
-IPSD = r"D:\雷达\数据库\IPSD"
-PSDD = r"D:\雷达\数据库\PSDDv1.0"
+
+_P, _COMBO = _load_paths()
+DS = os.path.join(_P["tiles_dir"], _COMBO)
+MASK = _P["tile_masks_dir"]
+
+IPSD = _P['ipsd_dir']
+PSDD = _P['mats_dir']
 OUT = os.path.dirname(os.path.abspath(__file__))
 GUARD = 8
 C_PSDD = 0.21

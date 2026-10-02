@@ -32,8 +32,25 @@ from sklearn.metrics import roc_auc_score, roc_curve
 
 WORK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, WORK)
-DS = os.environ.get('PSDD_COMPOSITE', r'D:\雷达\数据库\PSDDv1.0\论文所用数据集\四成分jpg')
-MASK = os.environ.get('PSDD_MASKS', r'D:\雷达\数据库\PSDDv1.0\论文所用数据集\位置矩阵\总')
+# --------------------------------------------------------------------------- #
+# dataset paths, from configs/default.yaml (override with --config)
+# --------------------------------------------------------------------------- #
+def _load_paths():
+    import argparse
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from src import config as _cfg
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--config", default=None, help="YAML to read (default: configs/default.yaml)")
+    ap.add_argument("--combination", default="PmPvPs",
+                    help="which tile dataset under paths.tiles_dir to evaluate")
+    args, _ = ap.parse_known_args()
+    c = _cfg.load(args.config)["paths"]
+    return c, args.combination
+
+
+_P, _COMBO = _load_paths()
+DS = os.path.join(_P["tiles_dir"], _COMBO)
+MASK = _P["tile_masks_dir"]
 
 # --------------------------------------------------------------------------- #
 # minimal dataset helpers (the release keeps the experiment layout flat: one
@@ -63,10 +80,10 @@ def consistent_tiles(cache, margin=1.0):
 
 
 
-ROOT = r"D:\雷达\数据库\PSDDv1.0"
+ROOT = _P['mats_dir']
 T_DIR = os.path.join(ROOT, "mat全景极化")
-XML_DIR = os.path.join(ROOT, "Annotations全景极化对应标签")
-TILES = os.path.join(ROOT, "论文所用数据集")
+XML_DIR = _P['annotations_dir']
+TILES = os.path.join(_P['tiles_dir'], _COMBO)
 SIZE, OVERLAP, MIN_T = 256, 30, 3
 OUT = os.path.dirname(os.path.abspath(__file__))
 

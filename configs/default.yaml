@@ -15,8 +15,22 @@ paths:
   components_dir: data/四成分
   # Stage I(b) output: one 8-bit PNG per scene, 255 = ship, 0 = background
   masks_dir: data/分割舰船位置矩阵
-  # VOC-style XML annotations, needed only by the detector dataset builder
+  # VOC-style XML annotations, needed by the detector dataset builder and by the
+  # tile -> scene mapping of the comparison scripts
   annotations_dir: data/Annotations
+  # coherency matrices, one .mat per scene with T11, T12_real/imag, T13_real/imag,
+  # T22, T23_real/imag, T33 - the input of the MATLAB decomposition and of
+  # src/decomposition.py
+  mats_dir: data/mat
+  # tile datasets, one directory per input combination, written by
+  # `python scripts/05_detector.py build --channels Pm,Pv,Ps --out <here>/PmPvPs`
+  # (<here>/<combination>/{images,labels}/{train,val,test} plus <split>.txt)
+  tiles_dir: data/yolo
+  # tile-level ground-truth masks, same stems as the tiles (Stage I(b) cropped
+  # to the same windows)
+  tile_masks_dir: data/masks
+  # third-party transfer dataset (IPSD, MaOutCNN); leave empty to skip 08_transfer.py
+  ipsd_dir: data/IPSD
   # everything the pipeline writes goes here
   work_dir: work
 

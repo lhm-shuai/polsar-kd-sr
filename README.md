@@ -61,22 +61,35 @@ below.
 
 ## Data
 
-The dataset is **not** redistributed here. PSDD, the benchmark used in the paper,
-is described in
+The datasets are **not** redistributed here. PSDD, the benchmark used in the
+paper, is described in
 
 > Z. Yu et al., *PSDD: A benchmark PolSAR dataset for CNN performance* (see the
 > paper's reference list).
 
-You need three directories:
+Every path a script reads or writes comes from `configs/default.yaml` - there are
+no hard-coded paths anywhere in the tree. Point that block at your copy:
 
 ```
-data/mat/            coherency-matrix .mat files, one per scene
-data/Annotations/    VOC-style XML, one per scene, <object><name>ship</name>
-data/四成分/          <- written by Stage I(a)
-data/分割舰船位置矩阵/  <- written by Stage I(b)
+data/mat/              coherency matrices, one .mat per scene:
+                       T11, T12_real/imag, T13_real/imag, T22, T23_real/imag, T33
+data/Annotations/      VOC XML, one per scene, <object><name>ship</name>
+data/四成分/            Stage I(a) output: one .npy per scene, shape (H, W, 3),
+                       channels [Pm, Pv, Ps]
+data/分割舰船位置矩阵/    Stage I(b) output: one 8-bit PNG per scene, 255 = ship
+data/yolo/<combination>/  tile datasets written by 05_detector.py build; the
+                       comparison scripts read the combination named by
+                       --combination (default PmPvPs)
+data/masks/            tile-level ground-truth masks, same stems as the tiles
+data/IPSD/             optional third-party transfer set (MaOutCNN); 08_transfer.py
+                       is skipped when empty
+work/                  everything the pipeline writes
 ```
 
-Then edit the `paths:` block at the top of `configs/default.yaml`.
+```bash
+python scripts/01_teacher.py            # reads configs/default.yaml automatically
+python scripts/07_operators.py --config configs/default.yaml --combination PmPvPs
+```
 
 ## Reproducing the paper
 
@@ -159,6 +172,27 @@ Notes for the cross-dataset experiment (`08_transfer.py`):
   (3-pixel erosion) as positives and an 8-pixel guard band around the boxes as
   negatives, and PSDD is re-evaluated under the same protocol so the two columns
   of Table XV are like-for-like.
+
+### Which script produces which table
+
+| Paper table | Script | Result file |
+|---|---|---|
+| I. Settings | `configs/default.yaml` | - |
+| II. Data inventory and split | `05_detector.py build` (tile/box counts) | - |
+| III. Complexity vs loss | `02_search.py` | `results/mined_descriptor.txt` |
+| IV. Seed stability | `03_seeds.py` | - |
+| V. Pixel-level threshold comparison | `04_evaluate.py` | - |
+| VI-VIII. Input-feature and network comparisons | `05_detector.py train/val` | - |
+| IX. Published polarimetric operators | `07_operators.py` | `results/classic_operators.json` |
+| X. Target-to-clutter ratio | `09_tcr.py` | `results/tcr.json` |
+| XI. Fused pixel-level extraction | `06_assist.py` | - |
+| XII (CN). Error decomposition | same assist-stage tiles | `results/error_analysis.json` |
+| XIII. Size and speed | `10_sizes.py` (+ the same protocol under the MMDetection env) | `results/size_speed_*.json` |
+| XIV (CN: XV). Cross-dataset transfer | `08_transfer.py` | `results/ipsd_transfer.json` |
+
+Figures 1-6 and 16-18 are schematics or datasets produced by the pipeline above;
+the ROC/PR and detection-visualisation figures come from `04_evaluate.py` and
+`05_detector.py` directly.
 
 ## Three things to know before you compare numbers
 
