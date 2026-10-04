@@ -41,6 +41,21 @@ Each script under `scripts/` corresponds to one block of results:
 | `03_seeds.py` | the five-seed stability study, Table II |
 | `04_evaluate.py` | Table III, ROC figures |
 | `05_detector.py` | Tables IV–VI |
+| `06_assist.py` | the two-layer pixel-level extraction, Tables IX–X |
+| `07_operators.py` | the operator-set ablation, Tables VII–VIII |
+| `08_transfer.py` | the IPSD zero-shot transfer, Table XIII |
+| `09_tcr.py` | the target-to-clutter ratios, Table VII |
+| `10_sizes.py` | parameter/FLOP/FPS inventory, Table XI |
+| `ipsd_eroded_rerun.py` | Table XIII re-derived with the documented 3-px box erosion |
+| `ipsd_screened.py` | the label-consistency screening applied to IPSD (861/865 pass) |
+| `ipsd_operating_point.py` | zero-training deployment: PSDD operating points transferred |
+| `scan_ipsd_tiles.py` | per-tile AUCs and bootstrap CIs behind the transfer figure |
+
+The four `ipsd_*` scripts re-derive the paper's cross-dataset claims under three
+independent protocols before submission: the documented erosion, the paper's own
+label-consistency screening (861/865 tiles pass, ranking unchanged), and the
+zero-training deployment protocol under which total power's operating point
+collapses (F1 0.067) while the descriptor transfers. Each writes its own JSON.
 
 ---
 
@@ -178,16 +193,3 @@ Notes for the cross-dataset experiment (`08_transfer.py`):
 | Paper table | Script | Result file |
 |---|---|---
 
-## Cross-dataset verification scripts (added with the final revision)
-
-The paper's IPSD zero-shot claims were re-derived under three independent
-protocols before submission; each script is self-contained and writes its own
-JSON next to :
-
-| Script | Protocol | Headline |
-|---|---|---|
-|  | box-proxy AUC (as in the paper) | descriptor 0.677, first among polarimetric representations |
-|  | same, with the documented 3-px box erosion made explicit | reproduces the table within 0.006 |
-|  | + the paper's label-consistency screening applied to IPSD | 861/865 tiles pass; ranking unchanged |
-|  | zero-training deployment: PSDD-selected operating points transferred | SPAN's operating point collapses (F1 0.067) |
-|  | per-tile AUCs (bootstrap CIs, Fig. 20 data) | macro means and CIs |
