@@ -176,82 +176,18 @@ Notes for the cross-dataset experiment (`08_transfer.py`):
 ### Which script produces which table
 
 | Paper table | Script | Result file |
+|---|---|---
+
+## Cross-dataset verification scripts (added with the final revision)
+
+The paper's IPSD zero-shot claims were re-derived under three independent
+protocols before submission; each script is self-contained and writes its own
+JSON next to :
+
+| Script | Protocol | Headline |
 |---|---|---|
-| I. Settings | `configs/default.yaml` | - |
-| II. Data inventory and split | `05_detector.py build` (tile/box counts) | - |
-| III. Complexity vs loss | `02_search.py` | `results/mined_descriptor.txt` |
-| IV. Seed stability | `03_seeds.py` | - |
-| V. Pixel-level threshold comparison | `04_evaluate.py` | - |
-| VI-VIII. Input-feature and network comparisons | `05_detector.py train/val` | - |
-| IX. Published polarimetric operators | `07_operators.py` | `results/classic_operators.json` |
-| X. Target-to-clutter ratio | `09_tcr.py` | `results/tcr.json` |
-| XI. Fused pixel-level extraction | `06_assist.py` | - |
-| XII (CN). Error decomposition | same assist-stage tiles | `results/error_analysis.json` |
-| XIII. Size and speed | `10_sizes.py` (+ the same protocol under the MMDetection env) | `results/size_speed_*.json` |
-| XIV (CN: XV). Cross-dataset transfer | `08_transfer.py` | `results/ipsd_transfer.json` |
-
-Figures 1-6 and 16-18 are schematics or datasets produced by the pipeline above;
-the ROC/PR and detection-visualisation figures come from `04_evaluate.py` and
-`05_detector.py` directly.
-
-## Three things to know before you compare numbers
-
-**1. The low-complexity descriptor has the same AUC as the raw sum.**
-`exp(-c/(Pm+Pv))` is strictly monotone in `Pm + Pv`, so it ranks pixels
-identically. `scripts/04_evaluate.py` therefore prints a `Pm+Pv` row next to
-`Pmv`. The contribution of the descriptor is that it is closed form, costs three
-operations, and saturates like a membership probability — not that it separates
-the classes better. Quoting an AUC gain over `Pm + Pv` would be wrong; the paper
-does not claim one.
-
-**2. The teacher consumes the features in a different order than the rendering.**
-The `.npy` files store `[Pm, Pv, Ps]`. The luminance step needs exactly that
-order. The teacher, however, was trained on `(Ps, Pm, Pv)` — an arbitrary choice
-that does not affect what the network can represent, but which shifts the
-reproduced numbers slightly if you permute it. `src/data.py` handles both
-orders explicitly.
-
-**3. Background pixels are the whole image minus the labelled ships.** The mask
-is written only inside annotation boxes, so `mask == 0` means "outside every box,
-plus the sub-threshold pixels inside one". The sampling in `src/data.py` relies
-on this, and it is why the background class is defined by the annotations rather
-than by the threshold.
-
-## Search settings
-
-Taken from the archived `PySRRegressor` checkpoint of the run behind Fig. 7 and
-Table I, not retyped from the manuscript:
-
-```
-niterations 300 · populations 100 · population_size 27 · maxsize 30
-binary  + - * /          unary  square sqrt log exp sin cos
-constraints  {log: 5, sqrt: 5, exp: 5, "/": (-1, 5)}
-elementwise_loss L2DistLoss() · batching with batch_size 500 · procs 8
-```
-
-The logarithm is in the operator set but is selected in none of the ten archived
-fronts, so no reported expression contains it.
-
-## Licences
-
-- **This repository** is MIT (see `LICENSE`).
-- **Ultralytics** (YOLO training) is **AGPL-3.0**. It is used here as an
-  installed dependency, not vendored; if you copy Ultralytics source into your
-  own tree, the AGPL applies to your tree.
-- **`matlab/yamaguchi_4components_T3.m`** implements the published Yamaguchi
-  four-component decomposition; the method is cited in the file header.
-- **PSDD** has its own terms. Do not redistribute the dataset from this
-  repository.
-
-## Citation
-
-```bibtex
-@article{liu_polsar_kdsr,
-  title  = {Feedback Learning-Based Polarimetric Scattering Representation
-            for PolSAR Ship Detection},
-  author = {Liu, Haomiao and Quan, Sinong and Cai, Zhihao},
-  note   = {Preprint}
-}
-```
-
-See `CITATION.cff` for a machine-readable copy.
+|  | box-proxy AUC (as in the paper) | descriptor 0.677, first among polarimetric representations |
+|  | same, with the documented 3-px box erosion made explicit | reproduces the table within 0.006 |
+|  | + the paper's label-consistency screening applied to IPSD | 861/865 tiles pass; ranking unchanged |
+|  | zero-training deployment: PSDD-selected operating points transferred | SPAN's operating point collapses (F1 0.067) |
+|  | per-tile AUCs (bootstrap CIs, Fig. 20 data) | macro means and CIs |
