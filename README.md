@@ -187,9 +187,3 @@ Notes for the cross-dataset experiment (`08_transfer.py`):
   (3-pixel erosion) as positives and an 8-pixel guard band around the boxes as
   negatives, and PSDD is re-evaluated under the same protocol so the two columns
   of Table XV are like-for-like.
-
-### Which script produces which table
-
-| Paper table | Script | Result file |
-|---|---|---
-
