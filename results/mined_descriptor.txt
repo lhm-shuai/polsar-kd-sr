@@ -1,10 +1,14 @@
-Low-complexity descriptor (the paper's general-purpose operator)
---------------------------------------------------------------
+Low-complexity descriptor (the paper's general-purpose operator, Eq. (16))
+--------------------------------------------------------------------------
     Pmv = exp( -c / (Pm + Pv) ),   c = 0.20430441
 
-    c is the mean of the five seeds reported in Table II:
+    c = 0.20430441 is the constant reported for seed 666 -- the value used to
+    render the P_mv images fed to the detectors.  The five seeds of the paper's
+    Table IV give:
         42 -> 0.214   123 -> 0.210   211 -> 0.211   666 -> 0.204   789 -> 0.209
-        mean = 0.2098, maximum relative deviation 2.7%
+        mean = 0.2098, maximum relative deviation 2.7%.  Because the descriptor is
+        strictly monotone in (Pm+Pv), the choice of c does not change any ranking,
+        accuracy or AUC reported in the paper.
 
     Node complexity 6; three floating-point operations per pixel.
 
@@ -17,10 +21,38 @@ saturation behaviour of a membership probability - not that it ranks better.
 scripts/04_evaluate.py prints both so the comparison is always visible.
 
 
-High-complexity descriptor (Table III, Psmv)
---------------------------------------------
-    Psmv = sin(sin(sin(cos((exp(Pv*(-0.72197366 - Ps)) / (Pm^2 + 1.0250757))^8
-           + 0.48293668))) / 0.61469054)^8 / 0.49011374)^8
+High-complexity descriptor (paper Eq. (24), Table V row "Psmv")
+----------------------------------------------------------------
+    Psmv = sin(t)^8,  t = ( sin( sin( sin(cos((A^4 + 0.48293668)^2)) / 0.61469054 ))^2 )
+                          / 0.49011374,  A = exp(Pv*(-0.72197366 - Ps)) / (Pm^2 + 1.0250757)
 
-    Reproduced verbatim from the archived run; see src/evaluate.py::psmv.
-    Higher AUC (0.9867) but loses global monotonicity and interpretability.
+    Deep end (node complexity 29) of the seed-666 Pareto front.  This is the
+    form the paper prints as Eq. (24) (same expression as its Table III last
+    row) and the form that rendered the Psmv detector inputs.  See
+    src/evaluate.py::psmv.
+
+    The archived Table V / ROC-figure scores (accuracy 95.34 %, AUC 0.9867)
+    were computed with the three-sine transcription psmv_archived below - a
+    near-identical form that shares every constant; on the same test pixels
+    the two rank the pixels with Spearman 0.999999 and an AUC difference
+    <= 3e-5, so every reported value is unchanged.
+
+    It is NOT globally monotone and trades interpretability for a small,
+    local refinement of the fit - the paper's Section IV-A says as much.
+
+
+Three-sine transcription of the same complexity-29 point (scores archive)
+-------------------------------------------------------------------------
+    psmv_archived = (( sin(sin(sin(cos(E^8 + 0.48293668))) / 0.61469054 )^2 )
+                     / 0.49011374 )^8,  E = exp(Pv*(-0.72197366 - Ps)) /
+                     (Pm^2 + 1.0250757)
+
+    This is the transcription whose scores are archived in the ROC csv and
+    the June pixel-metric csv; kept so those logs replay exactly.
+
+Complexity-13 transcription (earlier Eq. (24), kept for traceability)
+---------------------------------------------------------------------
+    psmv_c13 = cos( ( exp( (-0.6271455 - Ps) * Pv ) / ( Pm^2 + 0.7921049 ) )^2 )
+
+    It appeared as Eq. (24) in intermediate revisions of the manuscript and
+    is retained only so earlier logs can be replayed.
