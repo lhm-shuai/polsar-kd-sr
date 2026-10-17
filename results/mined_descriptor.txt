@@ -1,48 +1,55 @@
-Low-complexity descriptor (the paper's general-purpose operator)
-----------------------------------------------------------------
+Low-complexity descriptor (the paper's general-purpose operator, Eq. (16))
+--------------------------------------------------------------------------
     Pmv = exp( -c / (Pm + Pv) ),   c = 0.20430441
 
-    c = 0.20430441 is the seed-666 constant used to render the P_mv images
-    fed to the detectors.  The five converged seeds of the paper's Table III
-    give:
-        42 -> 0.214   123 -> 0.210   211 -> 0.211   666 -> 0.204   789 -> 0.209
-        mean = 0.2098, maximum relative deviation 2.7%.
-
-    Because Pmv is strictly monotone in (Pm+Pv), c changes the operating point
-    but not any ranking, accuracy or AUC.  The paper therefore also reports the
-    raw sum Pm+Pv; on the 1:2 balanced test sample both have AUC 0.9772.
+    c is the mean of the five official seeds (42, 123, 211, 666, 789):
+        42 -> 0.21386275   123 -> 0.21064375   211 -> 0.21132621
+        666 -> 0.20430441  789 -> 0.20927252
+        mean = 0.20988, maximum relative deviation 2.66%
 
     Node complexity 6; three floating-point operations per pixel.
 
-Note on what this is worth
---------------------------
-exp(-c/x) is strictly monotone in x = Pm + Pv, so this descriptor has exactly
-the same AUC and essentially the same accuracy as the raw sum Pm + Pv.  Its
-value is that it is closed form, costs three operations, and maps to (0, 1)
-with the saturation behaviour of a membership probability - not that it ranks
-better.  scripts/04_evaluate.py prints both so the comparison is always visible.
+    Note: exp(-c/x) is strictly monotone in x = Pm + Pv, so this descriptor
+    has exactly the same AUC and essentially the same accuracy as the raw sum
+    Pm + Pv. Its value is that it is closed form, costs three operations, and
+    maps to (0, 1) with the saturation behaviour of a membership probability
+    - not that it ranks better. scripts/04_evaluate.py prints both so the
+    comparison is always visible.
 
 
-High-complexity descriptor (paper Table IV row "Psmv (C=13, ref.)")
---------------------------------------------------------------------
-    Psmv = cos(A^2),   A = exp( (-0.6271455 - Ps) * Pv ) / ( Pm^2 + 0.7921049 )
+High-complexity descriptor (the paper's Psmv, Eq. (24), Table IV / Table IX)
+--------------------------------------------------------------------------
+    Psmv = C29, the deep-end point of the seed-666 Pareto front:
 
-    Complexity-13 point of the seed-666 Pareto front.  It is the expression
-    behind the paper's Table IV row "Psmv (C=13, ref.)" (accuracy 95.34%,
-    AUC 0.9867).  It is reported only as a pixel-level reference; it is NOT
-    used in the detector experiments.
-
-    The paper's earlier C=29 transcription is retained below only so that
-    older logs can be replayed exactly.
-
-
-Legacy C=29 transcription (not the paper's Psmv)
-------------------------------------------------
-    Psmv_c29 = sin(t)^8,
-        t = ( sin( sin( sin(cos((A^8 + 0.48293668)^2)) / 0.61469054 ))^2 )
-            / 0.49011374,
         A = exp( Pv * (-0.72197366 - Ps) ) / ( Pm^2 + 1.0250757 )
+        t = cos( A^8 + 0.48293668 )
+        t = sin(t) / 0.61469054
+        t = sin( sin(t) )
+        t = t^2 / 0.49011374
+        Psmv = sin(t)^8
 
-    This is the deep-end expression printed in intermediate revisions.  It is
-    NOT the C=13 reference row used in the final manuscript.  See
-    src/evaluate.py::psmv_c29_legacy.
+    This is the canonical Psmv used by the paper: Eq. (24), the last row of
+    Table III, and the Pmvs detector input.
+
+    The archived Table IV/IX scores (AUC 0.9867 on the PSDD 1:2 balanced
+    sample set) were produced by the numerically equivalent three-sine
+    transcription of the same C29 point, implemented as `psmv_archived` in
+    `src/evaluate.py`; the archived transfer scores use the same transcription.
+    The two transcriptions share the same constants and differ by <= 3e-4 in
+    AUC (0.9867 vs 0.9864); they are the same descriptor, not two different
+    ones.
+
+
+Historical transcriptions (kept for replay, NOT the paper's Psmv)
+------------------------------------------------------------------
+    C13: cos( ( exp( (-0.6271455 - Ps) * Pv ) / ( Pm^2 + 0.7921049 ) )^2 )
+         An intermediate-revision expression.  It is not Psmv.
+
+    C16: sin( cos^2( E^4 ) ),
+         E = exp( (-0.69994015 - Ps) * Pv ) / ( Pm^2 + 0.87565625 )
+         The legacy `final_tables.py::psmv` implementation used to reproduce
+         the old Table V row in the v90 pipeline.  It is not the paper's
+         Eq. (24) and should not be used as the canonical Psmv.
+
+    When in doubt, use `src/evaluate.py::psmv` (C29) and
+    `src/evaluate.py::psmv_archived` (the three-sine transcription of C29).

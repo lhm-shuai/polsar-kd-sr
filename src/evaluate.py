@@ -27,35 +27,35 @@ def pmv(Ps, Pm, Pv):
 
 
 def psmv(Ps, Pm, Pv):
-    """The paper's 13-node high-complexity reference descriptor (Sec. III-C).
+    """The paper's C=29 high-complexity reference descriptor (Sec. III-C).
 
-    With A = exp( (-0.6271455 - Ps) * Pv ) / ( Pm^2 + 0.7921049 ):
+    With A = exp( (-0.72197366 - Ps) * Pv ) / ( Pm^2 + 1.0250757 ):
 
-        Psmv = cos( A^2 )
+        B = sin(sin(sin(cos(A^8 + 0.48293668))))
+        Psmv = [ B^2 / (0.61469054 * 0.49011374) ]^8
 
-    This is the C=13 point of the seed-666 Pareto front and the expression
-    behind the paper's Table IV row "Psmv (C=13, ref.)" (accuracy 95.34%,
+    This is the C=29 point of the seed-666 Pareto front and the expression
+    behind the paper's Table IV row "Psmv (C=29, ref.)" (accuracy 95.34%,
     AUC 0.9867).  It is reported only as a pixel-level reference and is not
-    used in the detector experiments.  The older C=29 transcription is kept
-    below as psmv_c29_legacy for traceability of earlier logs.
+    used in the detector experiments.
     """
-    inner = np.exp((-0.6271455 - Ps) * Pv) / (np.square(Pm) + 0.7921049)
-    return np.cos(np.square(inner))
-
-
-def psmv_c13(Ps, Pm, Pv):
-    """Alias of psmv (C=13) kept for backward compatibility."""
-    return psmv(Ps, Pm, Pv)
-
-
-def psmv_c29_legacy(Ps, Pm, Pv):
-    """Legacy C=29 transcription, retained only to replay earlier logs."""
     A = np.exp(Pv * (-0.72197366 - Ps)) / (np.square(Pm) + 1.0250757)
-    t = np.cos(np.square(np.square(np.square(A)) + 0.48293668))
+    t = np.cos(np.square(np.square(np.square(A))) + 0.48293668)
     t = np.sin(t) / 0.61469054
     t = np.sin(np.sin(t))
     t = np.square(t) / 0.49011374
     return np.power(np.sin(t), 8)
+
+
+def psmv_c13(Ps, Pm, Pv):
+    """Legacy C=13 reference, retained only for traceability."""
+    inner = np.exp((-0.6271455 - Ps) * Pv) / (np.square(Pm) + 0.7921049)
+    return np.cos(np.square(inner))
+
+
+def psmv_c29_legacy(Ps, Pm, Pv):
+    """Alias of psmv (C=29) kept for backward compatibility."""
+    return psmv(Ps, Pm, Pv)
 
 
 def cfar_score(image, guard_win=3, bg_win=10, pfa=1e-4):

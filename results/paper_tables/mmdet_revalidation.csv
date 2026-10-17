@@ -1,0 +1,9 @@
+﻿model,input,map50,prec_05,rec_05,f1_05,best_thr,best_prec,best_rec,best_f1,best_epoch,checkpoint,source
+RetinaNet,PmPvPs,80.47,78.98,75.16,77.02,0.5398,82.55,73.68,77.86,11,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\retinanet_r50_fpn_1x_polar_ship四成分\best_coco_bbox_mAP_epoch_11.pth,retinanet_r50_fpn_1x_polar_ship四成分
+RetinaNet,PmvPvPs,81.91,81.76,74.53,77.97,0.496,81.88,75.16,78.38,9,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\retinanet_r50_fpn_1x_polar_ship替换\best_coco_bbox_mAP_epoch_9.pth,retinanet_r50_fpn_1x_polar_ship替换
+Faster R-CNN,PmPvPs,80.17,75.6,79.58,77.54,0.8253,84.13,73.68,78.56,10,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\faster_rcnn_r50_caffe_fpn_1x_polar_ship四成分\best_coco_bbox_mAP_epoch_10.pth,faster_rcnn_r50_caffe_fpn_1x_polar_ship四成分
+Faster R-CNN,PmvPvPs,81.09,76.08,81.68,78.78,0.8057,86.2,74.95,80.18,9,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\faster_rcnn_r50_caffe_fpn_1x_polar_ship替换\best_coco_bbox_mAP_epoch_9.pth,faster_rcnn_r50_caffe_fpn_1x_polar_ship替换
+SSD,PmPvPs,63.35,87.78,16.63,27.96,0.3002,66.37,62.74,64.5,12,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\ssd300_1x_polar_ship四成分\best_coco_bbox_mAP_epoch_12.pth,ssd300_1x_polar_ship四成分
+SSD,PmvPvPs,64.43,86.09,27.37,41.53,0.314,69.37,62.95,66.0,11,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\ssd300_1x_polar_ship替换\best_coco_bbox_mAP_epoch_11.pth,ssd300_1x_polar_ship替换
+PAA,PmPvPs,80.83,72.66,81.68,76.91,0.5711,81.49,76.0,78.65,11,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\paa_r50_fpn_1x_ship四成分\best_coco_bbox_mAP_epoch_11.pth,paa_r50_fpn_1x_ship四成分
+PAA,PmvPvPs,81.3,69.82,80.84,74.93,0.5581,79.91,76.21,78.02,9,D:\Anaconda\envs\DL\mmdetection-3.3.0\mmdetection-3.3.0\tools\work_dirs\paa_r50_fpn_1x_ship替换\best_coco_bbox_mAP_epoch_9.pth,paa_r50_fpn_1x_ship替换

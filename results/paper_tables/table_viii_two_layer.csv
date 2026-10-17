@@ -1,6 +1,5 @@
 ﻿Scheme,Precision,Recall,F1,IoU
 Descriptor only (global),0.281,0.249,0.264,0.152
-Pm only (global),0.257,0.276,0.266,0.154
 Boxes only,0.224,0.793,0.349,0.212
 Box + descriptor (single),0.615,0.543,0.577,0.405
 Box + descriptor (double),0.574,0.584,0.579,0.407

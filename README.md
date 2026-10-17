@@ -22,11 +22,11 @@ unit-interval output that can replace the `Pm` channel of a detector, not a new
 ranking of the pixels. The repository prints both `Pmv` and the raw sum so this
 property is always visible.
 
-> **Scope of the paper.** The detector comparison is restricted to four YOLO
-> variants (YOLOv8n, YOLOv11n, YOLOv12n, YOLO26). The earlier MMDetection
-> one/two-stage rows were removed because their per-cell training logs could not
-> be archived; no cross-family generality is claimed. See
-> `PAPER_CONSISTENCY.md`.
+> **Scope of the paper.** The detector comparison covers four YOLO variants
+> (YOLOv8n, YOLOv11n, YOLOv12n, YOLO26) and four MMDetection detectors
+> (RetinaNet, Faster R-CNN, SSD, PAA). The controlled comparison is the
+> within-architecture replacement of `Pm` by `Pmv`; no broader architecture
+> generality is claimed. See `PAPER_CONSISTENCY.md`.
 
 ---
 
@@ -41,8 +41,8 @@ property is always visible.
 | `src/sr.py` | Sec. II-B | the PySR search and the Pareto selection |
 | `src/evaluate.py` | Sec. III-C | pixel metrics, ROC, raw-sum baseline, CFAR reference |
 | `src/detector.py` | Sec. III-D | sliced YOLO dataset + single-class training |
-| `results/mined_descriptor.txt` | Sec. II-B/III-B | the six-node descriptor and the C=13 reference |
-| `results/paper_tables/` | Tables I–VII | the exact numbers used in the manuscript |
+| `results/mined_descriptor.txt` | Sec. II-B/III-B | the six-node descriptor and the C=29 reference |
+| `results/paper_tables/` | Tables I–IX | the exact numbers used in the manuscript |
 | `paper/` | — | the IEEE-formatted manuscript (PDF + DOCX) |
 
 ### Script → paper block
@@ -53,11 +53,11 @@ property is always visible.
 | `02_search.py` | Pareto front / candidate expressions (Table II, Fig. 8) |
 | `03_seeds.py` | seed-stability study (Table III) |
 | `04_evaluate.py` | pixel-level comparison (Table IV, Figs. 9–10) |
-| `05_detector.py` | four YOLO variants (Tables V–VII, Figs. 11–14) |
+| `05_detector.py` | eight detectors (Tables V–VII, Figs. 11–14) |
 | `06_assist.py` | two-layer pixel extraction (Table VIII; auxiliary) |
 | `07_operators.py` | classic-operator comparison (auxiliary; not a main table) |
 | `08_transfer.py` | IPSD cross-sensor check (Table IX) with one scalar calibration |
-| `09_tcr.py` | target-to-clutter ratios (auxiliary; no result file shipped in v75) |
+| `09_tcr.py` | target-to-clutter ratios (TCR paragraph, n=115) |
 | `10_sizes.py` | parameter/FLOP/FPS inventory (auxiliary) |
 
 The four `ipsd_*` scripts re-derive the cross-dataset numbers under the
@@ -147,7 +147,7 @@ python scripts/04_evaluate.py --cfar-images data/四成分
 The output includes `Pm+Pv` next to `Pmv`; the script deliberately prints the
 raw sum so the rank equivalence is auditable.
 
-**Detectors (four YOLO variants).**
+**Detectors (eight detectors: four YOLO + four MMDetection).**
 
 ```bash
 python scripts/05_detector.py build --channels Pm,Pv,Ps  --out data/yolo_PmPvPs
@@ -160,9 +160,9 @@ The manuscript's YOLO protocol is 640×640 input, batch 8, AdamW, 300 epochs
 (three-channel) or 200 epochs (single-channel), single class. The released
 config trains the YOLO architecture from its YAML (no COCO initialization); the
 manuscript reports the released protocol and does not claim COCO initialization.
-MMDetection one/two-stage models are intentionally **not** part of the paper's
-main comparison; their earlier rows were removed because the final logs were not
-archived.
+The MMDetection detectors (RetinaNet, Faster R-CNN, SSD, PAA) use SGD, batch 4
+and 12 epochs with the official input scaling; their metrics are in
+`results/paper_tables/mmdet_revalidation.csv`.
 
 ## Licences and data availability
 
