@@ -1,0 +1,5 @@
+﻿detector,base_precision,base_recall,base_map50,base_f1,ours_precision,ours_recall,ours_map50,ours_f1
+YOLOv8,79.1,73.5,80.0,76.2,80.1,76.8,82.5,78.4
+YOLOv11,78.7,68.0,78.7,72.9,82.4,74.7,80.9,78.4
+YOLOv12,77.6,69.3,76.6,73.2,77.7,70.5,77.6,73.9
+YOLO26,66.7,66.5,69.7,66.6,70.7,65.7,71.1,68.1

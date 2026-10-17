@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Cross-dataset check (Table XV): apply the mined descriptor to IPSD (MaOutCNN's released
+"""Cross-dataset check: apply the mined descriptor to IPSD (MaOutCNN's released
 dataset) with zero retraining, using the group's own decomposition.
 
 The decomposition is the ported MATLAB code (gapfill/yamaguchi.py), which was
@@ -163,7 +163,7 @@ def main():
     res = {}
     print("\n%-7s %8s %8s %8s %8s %8s" % ("repr", "AUC", "prec", "rec", "F1", "IoU"))
     # operating points: PSDD-selected values on the descriptor's channel scale.
-    # Table XII row 1 uses the 8-bit render T=168 with A_min=16; here the same
+    # The paper's pixel-level operating point uses the 8-bit render T=168 with A_min=16; here the same
     # point is expressed through its threshold in value space (168/255) and no
     # area filter, so the number transfers as-is.
     ops = {"Pmv": 168 / 255.0}

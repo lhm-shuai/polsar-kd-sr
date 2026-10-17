@@ -2,7 +2,7 @@
 """Re-run the IPSD transfer evaluation under the protocol the paper documents:
 positives = pixels inside the boxes ERODED by 3 px, negatives = pixels outside
 an 8-px guard band.  The committed ipsd_transfer.py skipped the erosion step,
-which does not match Table XV/XIII.  Saves pooled AUCs and per-tile AUCs (for
+which does not match the cross-sensor tables.
 bootstrap CIs) with the erosion in place."""
 import glob
 import io

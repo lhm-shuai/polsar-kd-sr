@@ -1,7 +1,7 @@
 """Reference implementation for
 
-    Feedback Learning-Based Polarimetric Scattering Representation for
-    PolSAR Ship Detection
+    Interpretable Polarimetric Scattering Representation for PolSAR Ship
+    Detection via Knowledge-Distillation-Guided Symbolic Regression
 
 The pipeline follows the paper's stages:
 

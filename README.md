@@ -1,8 +1,10 @@
 # PolSAR Ship Detection by Knowledge-Distillation-Guided Symbolic Regression
 
-Reference implementation of
+Reference implementation of the IEEE Transactions manuscript
 
-> **Feedback Learning-Based Polarimetric Scattering Representation for PolSAR Ship Detection**
+> **Interpretable Polarimetric Scattering Representation for PolSAR Ship Detection via Knowledge-Distillation-Guided Symbolic Regression**
+
+Haomiao Liu, Sinong Quan, and Zhihao Cai.
 
 The method distils a small multilayer-perceptron teacher into **closed-form
 scattering descriptors**. A lightweight teacher is trained on pixel-level hard
@@ -14,8 +16,17 @@ explicit accuracy–complexity trade-off. The selected operator,
 Pmv = exp( -c / (Pm + Pv) ),    c = 0.20430441
 ```
 
-is six nodes deep, costs three floating-point operations per pixel, and can be
-dropped into an existing detector as a replacement for the `Pm` channel.
+is a six-node closed-form mapping. It is strictly monotone in `Pm + Pv`, so it
+has the **same AUC as the raw sum**; its value is a bounded, auditable,
+unit-interval output that can replace the `Pm` channel of a detector, not a new
+ranking of the pixels. The repository prints both `Pmv` and the raw sum so this
+property is always visible.
+
+> **Scope of the paper.** The detector comparison is restricted to four YOLO
+> variants (YOLOv8n, YOLOv11n, YOLOv12n, YOLO26). The earlier MMDetection
+> one/two-stage rows were removed because their per-cell training logs could not
+> be archived; no cross-family generality is claimed. See
+> `PAPER_CONSISTENCY.md`.
 
 ---
 
@@ -24,38 +35,37 @@ dropped into an existing detector as a replacement for the `Pm` channel.
 | Path | Paper | What it does |
 |---|---|---|
 | `matlab/decompose_components.m` | Sec. II-A | Yamaguchi four-component decomposition → one `.npy` per scene |
-| `matlab/make_hard_labels.m` | Sec. II-A, Eqs. (7)-(8) | the pixel-level labelling rule → one mask `.png` per scene |
+| `matlab/make_hard_labels.m` | Sec. II-A | the pixel-level BT.601 threshold rule → one mask `.png` per scene |
 | `src/data.py` | Sec. III-A | pixel sampling and the scene-level split |
-| `src/teacher.py` | Sec. II-B | the 3-64-64-1 teacher, 4,481 parameters |
-| `src/sr.py` | Sec. II-C | the PySR search, all four variants used in the paper |
-| `src/evaluate.py` | Sec. III-C | pixel-level metrics, ROC, CFAR reference |
-| `src/detector.py` | Sec. III-A/D | sliced dataset + Ultralytics training |
-| `results/mined_descriptor.txt` | Sec. III-B | the two mined expressions |
+| `src/teacher.py` | Sec. II-A | the 3-64-64-1 teacher, 4,481 parameters |
+| `src/sr.py` | Sec. II-B | the PySR search and the Pareto selection |
+| `src/evaluate.py` | Sec. III-C | pixel metrics, ROC, raw-sum baseline, CFAR reference |
+| `src/detector.py` | Sec. III-D | sliced YOLO dataset + single-class training |
+| `results/mined_descriptor.txt` | Sec. II-B/III-B | the six-node descriptor and the C=13 reference |
+| `results/paper_tables/` | Tables I–VII | the exact numbers used in the manuscript |
+| `paper/` | — | the IEEE-formatted manuscript (PDF + DOCX) |
 
-Each script under `scripts/` corresponds to one block of results:
+### Script → paper block
 
 | Script | Produces |
 |---|---|
-| `01_teacher.py` | teacher metrics (Sec. III-B), soft labels for Stage III |
-| `02_search.py` | the Pareto front (Fig. 7), Table I |
-| `03_seeds.py` | the five-seed stability study, Table II |
-| `04_evaluate.py` | Table III, ROC figures |
-| `05_detector.py` | Tables IV–VI |
-| `06_assist.py` | the two-layer pixel-level extraction, Tables IX–X |
-| `07_operators.py` | the operator-set ablation, Tables VII–VIII |
-| `08_transfer.py` | the IPSD zero-shot transfer, Table XIII |
-| `09_tcr.py` | the target-to-clutter ratios, Table VII |
-| `10_sizes.py` | parameter/FLOP/FPS inventory, Table XI |
-| `ipsd_eroded_rerun.py` | Table XIII re-derived with the documented 3-px box erosion |
-| `ipsd_screened.py` | the label-consistency screening applied to IPSD (861/865 pass) |
-| `ipsd_operating_point.py` | zero-training deployment: PSDD operating points transferred |
-| `scan_ipsd_tiles.py` | per-tile AUCs and bootstrap CIs behind the transfer figure |
+| `01_teacher.py` | teacher metrics, soft labels |
+| `02_search.py` | Pareto front / candidate expressions (Table II, Fig. 8) |
+| `03_seeds.py` | seed-stability study (Table III) |
+| `04_evaluate.py` | pixel-level comparison (Table IV, Figs. 9–10) |
+| `05_detector.py` | four YOLO variants (Tables V–VII, Figs. 11–14) |
+| `06_assist.py` | box-gated pixel extraction (method; auxiliary) |
+| `07_operators.py` | classic-operator comparison (auxiliary; not a main table) |
+| `08_transfer.py` | IPSD cross-sensor check with one scalar calibration |
+| `09_tcr.py` | target-to-clutter ratios (auxiliary; no result file shipped in v75) |
+| `10_sizes.py` | parameter/FLOP/FPS inventory (auxiliary) |
 
-The four `ipsd_*` scripts re-derive the paper's cross-dataset claims under three
-independent protocols before submission: the documented erosion, the paper's own
-label-consistency screening (861/865 tiles pass, ranking unchanged), and the
-zero-training deployment protocol under which total power's operating point
-collapses (F1 0.067) while the descriptor transfers. Each writes its own JSON.
+The four `ipsd_*` scripts re-derive the cross-dataset numbers under the
+documented erosion / label-screening / operating-point protocols and write
+their own JSON. The paper reports the **1:2 balanced IPSD** result and calls it
+a cross-sensor consistency check, not a zero-shot transfer: the descriptor's
+constant is tied to the power scale, so one scalar calibration is applied to
+`Pm+Pv` and the expression is unchanged.
 
 ---
 
@@ -67,42 +77,36 @@ conda activate kdsr
 pip install -r requirements.txt
 ```
 
-PySR needs Julia; the first run installs it automatically (a few minutes). The
-experiments reported in the paper used PySR 1.5.9 on Julia 1.11.9, with
-`pysr` 1.5.9, `torch` 2.8+cu128.
-
-The detector stage additionally needs the Ultralytics package — see *Licences*
-below.
+PySR needs Julia; the first run installs it automatically. The reported runs
+used PySR 1.5.9 on Julia 1.11.9, with `torch` 2.8+cu128. The detector stage
+also needs Ultralytics (AGPL-3.0; see *Licences*).
 
 ## Data
 
-The datasets are **not** redistributed here. PSDD, the benchmark used in the
-paper, is described in
+The datasets are **not** redistributed here.
 
-> Z. Yu et al., *PSDD: A benchmark PolSAR dataset for CNN performance* (see the
-> paper's reference list).
+- **PSDD** is the benchmark of Gao et al., *PSDD: A benchmark PolSAR dataset for
+  CNN performance evaluation of ship detection*, IEEE AESM, 2026. It is the
+  dataset used in the paper; obtain it from the authors.
+- **IPSD** is the third-party set released with MaOutCNN; see the paper's
+  reference list. It is used only for the cross-sensor check.
 
-Every path a script reads or writes comes from `configs/default.yaml` - there are
-no hard-coded paths anywhere in the tree. Point that block at your copy:
+Every path a script reads or writes comes from `configs/default.yaml`; there are
+no hard-coded paths in the tree. Point the `paths:` block at your copy:
 
 ```
-data/mat/              coherency matrices, one .mat per scene:
-                       T11, T12_real/imag, T13_real/imag, T22, T23_real/imag, T33
-data/Annotations/      VOC XML, one per scene, <object><name>ship</name>
-data/四成分/            Stage I(a) output: one .npy per scene, shape (H, W, 3),
-                       channels [Pm, Pv, Ps]
+data/mat/              coherency matrices, one .mat per scene
+data/Annotations/      VOC XML, one per scene
+data/四成分/            Stage I(a) output: one .npy per scene, (H, W, 3), [Pm, Pv, Ps]
 data/分割舰船位置矩阵/    Stage I(b) output: one 8-bit PNG per scene, 255 = ship
-data/yolo/<combination>/  tile datasets written by 05_detector.py build; the
-                       comparison scripts read the combination named by
-                       --combination (default PmPvPs)
-data/masks/            tile-level ground-truth masks, same stems as the tiles
-data/IPSD/             optional third-party transfer set (MaOutCNN); 08_transfer.py
-                       is skipped when empty
+data/yolo/<combination>/  tile datasets written by 05_detector.py build
+data/masks/            tile-level ground-truth masks
+data/IPSD/             optional third-party transfer set
 work/                  everything the pipeline writes
 ```
 
 ```bash
-python scripts/01_teacher.py            # reads configs/default.yaml automatically
+python scripts/01_teacher.py
 python scripts/07_operators.py --config configs/default.yaml --combination PmPvPs
 ```
 
@@ -113,31 +117,25 @@ python scripts/07_operators.py --config configs/default.yaml --combination PmPvP
 rule is
 
 ```
-R, G, B = uint8(round(255 * clip(Pm, Pv, Ps, 0, 1)))    % MATLAB rounds
-L       = 0.299 R + 0.587 G + 0.114 B                   % ITU-R BT.601
+R, G, B = uint8(round(255 * clip(Pm, Pv, Ps, 0, 1)))
+L       = 0.299 R + 0.587 G + 0.114 B
 ship   <=>  L >= 40,  inside an annotation box only
 ```
 
-One constant, `40`, shared by all three sensors and all 23 scenes. This reproduces
-the released masks *pixel for pixel* on all 23 scenes. Note the channel order:
-`[Pm, Pv, Ps]` is `[R, G, B]`, and the luminance weights depend on it.
+One constant, `40`, shared by all three sensors and all 23 scenes. Note the
+channel order: `[Pm, Pv, Ps]` is `[R, G, B]`; the luminance weights depend on it.
 
-**Stage II — teacher.**
+**Stage II — teacher and search.**
 
 ```bash
 python scripts/01_teacher.py
-```
-
-**Stage III — search.**
-
-```bash
 python scripts/02_search.py                                    # main result
 python scripts/02_search.py --target hard --tag direct_sr      # Direct-SR ablation
 python scripts/02_search.py --features Pm,Pv --tag dual        # feature-subset ablation
-python scripts/02_search.py --operators arithmetic --tag ops_a # Fig. 14
+python scripts/02_search.py --operators arithmetic --tag ops_a
 python scripts/02_search.py --operators with_exp   --tag ops_b
 python scripts/02_search.py --operators full       --tag ops_c
-python scripts/03_seeds.py                                     # Table II
+python scripts/03_seeds.py                                     # Table III
 ```
 
 **Pixel-level evaluation.**
@@ -146,7 +144,10 @@ python scripts/03_seeds.py                                     # Table II
 python scripts/04_evaluate.py --cfar-images data/四成分
 ```
 
-**Detectors.**
+The output includes `Pm+Pv` next to `Pmv`; the script deliberately prints the
+raw sum so the rank equivalence is auditable.
+
+**Detectors (four YOLO variants).**
 
 ```bash
 python scripts/05_detector.py build --channels Pm,Pv,Ps  --out data/yolo_PmPvPs
@@ -155,35 +156,25 @@ python scripts/05_detector.py train --data-yaml configs/detector_data.yaml \
     --model yolov8n.yaml --name yolov8n_PmvPvPs
 ```
 
----
+The manuscript's YOLO protocol is 640×640 input, batch 8, AdamW, 300 epochs
+(three-channel) or 200 epochs (single-channel), single class. The released
+config trains the YOLO architecture from its YAML (no COCO initialization); the
+manuscript reports the released protocol and does not claim COCO initialization.
+MMDetection one/two-stage models are intentionally **not** part of the paper's
+main comparison; their earlier rows were removed because the final logs were not
+archived.
 
-### Comparisons added in the revision
+## Licences and data availability
 
-| Script | Produces |
-|---|---|
-| `scripts/07_operators.py` | Table VI: the descriptor vs PMS / SPAN / MPWF / PNF / RS / Rank-1 / CA-CFAR |
-| `scripts/09_tcr.py` | Table VII: target-to-clutter ratio per representation, in dB |
-| `scripts/08_transfer.py` | Table XV: zero-shot transfer to the IPSD dataset |
-| `results/*.json` | the measured numbers behind Tables VI, VII, XIV and XV |
+- Code: MIT (see `LICENSE`).
+- Ultralytics: AGPL-3.0, used as an installed dependency; it is not vendored.
+- PSDD and IPSD: third-party datasets, not redistributed; follow their release
+  terms.
+- Archived release: https://doi.org/10.6084/m9.figshare.33987049
+- Paper PDF/DOCX: `paper/`.
 
-`src/decomposition.py` is a line-by-line Python port of
-`matlab/yamaguchi_4components_T3.m` (mode 0) that the comparison scripts build
-on. It was checked against the MATLAB function on the same block of GF_3_064:
-the four components agree to a maximum absolute difference of 3e-18, i.e. float64
-rounding.
+## Citation
 
-Notes for the cross-dataset experiment (`08_transfer.py`):
-
-* IPSD's nine-band TIFs hold the polarimetric matrix in the same element order
-  the decomposition expects, `[C11, Re C12, Im C12, Re C13, Im C13, C22,
-  Re C23, Im C23, C33]`. The order was verified on the data itself: the three
-  diagonal bands are non-negative and the assembled 3x3 matrices are positive
-  semi-definite for 100% of pixels, while every alternative order fails.
-* The descriptor's constant is tied to the power scale it was mined in, so the
-  transfer applies **one scalar calibration**: the median of (Pm+Pv) over IPSD
-  is matched to PSDD's (1.24e-3 -> 1.60e-2). Neither the expression nor its
-  constant changes.
-* IPSD ships box annotations only. The comparison therefore uses tight box cores
-  (3-pixel erosion) as positives and an 8-pixel guard band around the boxes as
-  negatives, and PSDD is re-evaluated under the same protocol so the two columns
-  of Table XV are like-for-like.
+If you use this code, please cite the IEEE manuscript. A machine-readable entry
+is in `CITATION.cff`. Earlier titles/abstracts are superseded by the IEEE
+manuscript in `paper/`.

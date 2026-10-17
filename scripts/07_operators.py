@@ -17,7 +17,7 @@ block, with the clutter covariance estimated from the whole scene:
   CA-CFAR   two-parameter CFAR on SPAN, 31x31 cell average
 Reference rows (Ps, Pm, Pv, Pmv) come from the tile images themselves.
 Thresholds are picked on the validation split (Youden), then applied to the
-label-consistent test tiles -- the same protocol as the paper's Table XI.
+label-consistent test tiles -- the same pixel protocol as Table IV.
 """
 import collections, glob, io, json, os, re, sys
 import xml.etree.ElementTree as ET

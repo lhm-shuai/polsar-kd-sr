@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Apply the paper's own mask-to-image consistency screening to IPSD and
-re-score the zero-shot transfer on the surviving tiles.
+re-score the cross-sensor check on the surviving tiles.
 
 Screen (same rule as section III-A on PSDD): on the label-defining luminance
 map L = 0.299*render(Pm) + 0.587*render(Pv) + 0.114*render(Ps) (BT.601 weights,

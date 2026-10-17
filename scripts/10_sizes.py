@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Parameters, GFLOPs and forward-only FPS of the YOLO family (Table XIII).
+"""Parameters, GFLOPs and forward-only FPS of the YOLO family (auxiliary analysis).
 
 The MMDetection models (RetinaNet / Faster R-CNN / PAA / SSD300) are measured
 with the same protocol inside their own environment; the numbers reported in the

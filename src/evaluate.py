@@ -27,24 +27,29 @@ def pmv(Ps, Pm, Pv):
 
 
 def psmv(Ps, Pm, Pv):
-    """The paper's high-complexity descriptor Psmv, Eq. (24) / Table V.
+    """The paper's 13-node high-complexity reference descriptor (Sec. III-C).
 
-    With A = exp( Pv * (-0.72197366 - Ps) ) / ( Pm^2 + 1.0250757 ):
+    With A = exp( (-0.6271455 - Ps) * Pv ) / ( Pm^2 + 0.7921049 ):
 
-        t = cos( ( A^4 + 0.48293668 )^2 )
-        t = sin(t) / 0.61469054
-        t = sin( sin(t) )
-        t = t^2 / 0.49011374
-        Psmv = sin(t)^8
+        Psmv = cos( A^2 )
 
-    Deep end (node complexity 29) of the seed-666 Pareto front.  This is the
-    form that rendered the Psmv detector inputs and that the paper prints as
-    Eq. (24) (also its Table III last row).  The archived Table V row
-    (accuracy 95.34 %, AUC 0.9867) was computed with the near-identical
-    three-sine transcription `psmv_archived` below; on the same test pixels
-    the two forms differ by <= 3e-5 in AUC, i.e. they round to the same
-    reported value.
+    This is the C=13 point of the seed-666 Pareto front and the expression
+    behind the paper's Table IV row "Psmv (C=13, ref.)" (accuracy 95.34%,
+    AUC 0.9867).  It is reported only as a pixel-level reference and is not
+    used in the detector experiments.  The older C=29 transcription is kept
+    below as psmv_c29_legacy for traceability of earlier logs.
     """
+    inner = np.exp((-0.6271455 - Ps) * Pv) / (np.square(Pm) + 0.7921049)
+    return np.cos(np.square(inner))
+
+
+def psmv_c13(Ps, Pm, Pv):
+    """Alias of psmv (C=13) kept for backward compatibility."""
+    return psmv(Ps, Pm, Pv)
+
+
+def psmv_c29_legacy(Ps, Pm, Pv):
+    """Legacy C=29 transcription, retained only to replay earlier logs."""
     A = np.exp(Pv * (-0.72197366 - Ps)) / (np.square(Pm) + 1.0250757)
     t = np.cos(np.square(np.square(np.square(A)) + 0.48293668))
     t = np.sin(t) / 0.61469054
@@ -53,41 +58,6 @@ def psmv(Ps, Pm, Pv):
     return np.power(np.sin(t), 8)
 
 
-def psmv_c13(Ps, Pm, Pv):
-    """cos( ( exp( (-0.6271455 - Ps) * Pv ) / ( Pm^2 + 0.7921049 ) )^2 ).
-
-    Complexity-13 point of the same front; it was phrased as Eq. (24) in
-    intermediate revisions of the manuscript and is kept for traceability.
-    """
-    inner = np.exp((-0.6271455 - Ps) * Pv) / (np.square(Pm) + 0.7921049)
-    return np.cos(np.square(inner))
-
-
-def psmv_archived(Ps, Pm, Pv):
-    """Three-sine transcription of the same complexity-29 point (see psmv).
-
-    This transcription produced the archived Table V / ROC-figure scores
-    (accuracy 95.34 %, AUC 0.9867); it shares the constants of Eq. (24).
-    """
-    term1 = Pv * (-0.72197366 - Ps)
-    term2 = np.exp(term1)
-    term3 = np.square(Pm) + 1.0250757
-    term4 = term2 / term3
-    term5 = np.square(np.square(np.square(term4)))
-    term6 = term5 + 0.48293668
-    term7 = np.cos(term6)
-    term8 = np.sin(term7)
-    term9 = np.sin(term8)
-    term10 = np.sin(term9)
-    term11 = term10 / 0.61469054
-    term12 = np.square(term11)
-    term13 = term12 / 0.49011374
-    return np.square(np.square(np.square(term13)))
-
-
-# --------------------------------------------------------------------------- #
-# CFAR reference
-# --------------------------------------------------------------------------- #
 def cfar_score(image, guard_win=3, bg_win=10, pfa=1e-4):
     """Vectorised cell-averaging CFAR. Returns the detection score per pixel,
     with the border windows zeroed as in the reference implementation."""

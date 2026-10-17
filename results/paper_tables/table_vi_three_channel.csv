@@ -1,0 +1,5 @@
+﻿input,precision_pct,recall_pct,map50_pct,f1_pct
+"[Pm,Pv,Ps]",79.1,73.5,80.0,76.2
+"[Pmv,Pv,Ps]",80.1,76.8,82.5,78.4
+"[Pm,Pmv,Ps]",81.0,69.9,78.0,75.0
+"[Pm,Pv,Pmv]",79.6,73.8,79.1,76.6

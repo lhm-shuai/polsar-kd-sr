@@ -1,0 +1,28 @@
+Complexity,MSE,AUC,Expression
+1,0.1779,0.5000,0.3329602
+3,0.1087,0.8940,sqrt(sqrt(x2))
+4,0.0768,0.8642,exp(-0.10981266 / x1)
+5,0.0726,0.8267,cos(exp(0.37571833 - x1))
+6,0.0228,0.9772,exp(-0.20430441 / (x1 + x2))
+8,0.0227,0.9772,exp(-0.19675846 / (x2 + x1)) * 0.97852135
+9,0.0215,0.9790,cos(exp((x2 * -1.8165582) - x1) / 0.6259978)
+10,0.0193,0.9802,cos(exp(x2 * -1.9849416) / (square(x1) + 0.63131195))
+11,0.0163,0.9845,cos(exp(x2 * (-1.1086183 - x0)) / (x1 + 0.624463))
+12,0.0133,0.9855,cos(exp(x2 * (-1.4409937 - x0)) / (square(x1) + 0.6304557))
+13,0.0125,0.9867,cos(square(exp((-0.6271455 - x0) * x2) / (0.7921049 + square(x1))))
+14,0.0120,0.9866,sin(cos(square(exp(x2 * (-0.71879053 - x0)) / (square(x1) + 0.79187083))))
+15,0.0106,0.9866,cos(square(exp(x2 * (-0.7601919 - x0)) / (square(x1) + 0.79132587))) * 0.9186174
+16,0.0091,0.9866,sin(square(cos(square(square(exp((-0.69994015 - x0) * x2) / (square(x1) + 0.87565625))))))
+17,0.0083,0.9865,square(cos(square(square(exp(x2 * (-0.7284833 - x0)) / (square(x1) + 0.8763659)))) * 0.9475549)
+18,0.0081,0.9865,(cos(square(square(exp((-0.82881695 - x0) * x2) / (square(x1) + 0.7246343)))) * 0.46966472) - -0.4239002
+19,0.0075,0.9865,square(square(cos(square(square(square(exp((-0.71270174 - x0) * x2) / (square(x1) + 0.9379694)))) + 0.23466323)))
+20,0.0074,0.9863,square(square(square(cos(square(square(square(exp((-0.776902 - x0) * x2) / (square(x1) + 0.91942686))))) * 0.98429775)))
+21,0.0074,0.9863,square(sin(square(square(cos(square(square(square(exp(x2 * (-0.7439091 - x0)) / (square(x1) + 0.91328627))))))))) * 1.2400947
+22,0.0073,0.9864,square(square(sin(sin(sin(square(cos(square(square(exp(x2 * (-0.8131132 - x0)) / (square(x1) + 0.8974554))))))) / 0.56098825)))
+23,0.0072,0.9865,square(square(sin(square(cos(square(square(square(exp((-0.7438341 - x0) * x2) / (square(x1) + 0.9600657))) + 0.18741387))) * 1.3247231)))
+24,0.0071,0.9864,square(square(sin(square(sin(cos(square(square(square(exp((-0.7620701 - x0) * x2) / (square(x1) + 0.97512597))) + 0.29322237)))) / 0.53100204)))
+25,0.0071,0.9864,square(square(sin(sin(sin(square(cos(square(square(square(exp((-0.7525492 - x0) * x2) / (square(x1) + 0.9971811))) + 0.355128))))) / 0.5563661)))
+26,0.0070,0.9864,square(square(square(square(sin(sin(sin(cos(square(square(square(exp(x2 * (-0.73904276 - x0)) / (square(x1) + 0.9736996))) + 0.29505125)))) / -0.5139749)))))
+27,0.0070,0.9865,square(square(sin(square(sin(sin(cos(square(square(square(exp(x2 * (-0.67771333 - x0)) / (1.0630958 + square(x1)))) + 0.5651122)) / -0.67771333)) / 0.72225165))))
+28,0.0070,0.9865,square(square(sin(square(sin(sin(sin(cos(square(square(square(exp(x2 * (-0.66062665 - x0)) / (square(x1) + 1.0698854))) + 0.5888801))) / 0.6349558))) / 0.4996213)))
+29,0.0069,0.9864,square(square(square(sin(square(sin(sin(sin(cos(square(square(square(exp(x2 * (-0.72197366 - x0)) / (square(x1) + 1.0250757))) + 0.48293668))) / 0.61469054))) / 0.49011374))))

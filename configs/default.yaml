@@ -82,7 +82,9 @@ symbolic_regression:
   batch_size: 500
   procs: 8
   random_state: 666
-  # the paper repeats the whole search with these five seeds
+  # the five seeds reported in Table III.  Two additional seeds (456, 1024)
+  # converged to a different local optimum (AUC 0.9598) and are documented in
+  # PAPER_CONSISTENCY.md; they are not used for the reported descriptor.
   seeds: [42, 123, 211, 666, 789]
 
 # --------------------------------------------------------------------------- #
@@ -90,20 +92,20 @@ symbolic_regression:
 # --------------------------------------------------------------------------- #
 detector:
   data_yaml: configs/detector_data.yaml
-  model: yolov8n.yaml          # from scratch, no COCO pretraining
-  epochs: 300
+  model: yolov8n.yaml          # trained from the YAML, no COCO initialization
+  epochs: 300                  # three-channel; 200 for single-channel
   imgsz: 640
   batch: 8
   optimizer: AdamW
   single_cls: true
   device: 0
   seed: 0
-  # the eight architectures compared in Table VI
+  # The final paper compares four YOLO variants only.  The earlier
+  # MMDetection one/two-stage rows were removed from the manuscript because
+  # their final training logs were not archived; no cross-family generality
+  # is claimed.  See PAPER_CONSISTENCY.md.
   architectures:
-    single_stage: [yolov8n.yaml, yolov11n.yaml, yolov12n.yaml, yolo26.yaml,
-                   retinanet_r50_fpn_1x_coco.py, ssd300_coco.py,
-                   paa_r50_fpn_1x_coco.py]
-    two_stage: [faster_rcnn_r50_fpn_1x_coco.py]
+    single_stage: [yolov8n.yaml, yolov11n.yaml, yolov12n.yaml, yolo26.yaml]
 
 # --- intelligent-assists-general detection (Section II-C) --------------
 assist:
