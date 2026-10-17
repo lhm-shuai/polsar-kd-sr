@@ -54,9 +54,9 @@ property is always visible.
 | `03_seeds.py` | seed-stability study (Table III) |
 | `04_evaluate.py` | pixel-level comparison (Table IV, Figs. 9–10) |
 | `05_detector.py` | four YOLO variants (Tables V–VII, Figs. 11–14) |
-| `06_assist.py` | box-gated pixel extraction (method; auxiliary) |
+| `06_assist.py` | two-layer pixel extraction (Table VIII; auxiliary) |
 | `07_operators.py` | classic-operator comparison (auxiliary; not a main table) |
-| `08_transfer.py` | IPSD cross-sensor check with one scalar calibration |
+| `08_transfer.py` | IPSD cross-sensor check (Table IX) with one scalar calibration |
 | `09_tcr.py` | target-to-clutter ratios (auxiliary; no result file shipped in v75) |
 | `10_sizes.py` | parameter/FLOP/FPS inventory (auxiliary) |
 

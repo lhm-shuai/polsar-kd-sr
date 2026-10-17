@@ -11,6 +11,8 @@ These are the exact files behind Tables II–VII of the IEEE manuscript
 | `table_v_single_channel.csv` | Table V | derived from `detector_revalidation.csv`; values in percent |
 | `table_vi_three_channel.csv` | Table VI | derived from `detector_revalidation.csv`; values in percent |
 | `table_vii_yolo.csv` | Table VII | derived from `detector_revalidation.csv`; four YOLO variants only |
+| `table_viii_two_layer.csv` | Table VIII | two-layer pixel extraction; operating points in the paper |
+| `table_ix_cross_dataset.csv` | Table IX | PSDD/IPSD AUC and IPSD F1 |
 | `table_ipsd_balanced.json` | IPSD paragraph | `ipsd_balanced_v55.json`; one scalar calibration |
 | `detector_revalidation.csv` | raw source | YOLO runs; includes the raw-sum row `PmPv_raw` |
 

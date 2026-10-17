@@ -6,6 +6,8 @@ below is the one to use when checking a number, a table or a figure.
 
 ## 1. What the paper claims
 
+The figure set is now the Chinese v93 set 1–16, including the combined PR figure (English Fig. 13) and the two-layer comparison (English Fig. 14). The English manuscript has 14 pages and nine tables.
+
 | Paper item | Value / scope | Repository source |
 |---|---|---|
 | Descriptor | `Pmv = exp(-c/(Pm+Pv))`, 6 nodes, c = 0.20430441 | `src/evaluate.py::pmv`, `results/mined_descriptor.txt` |
@@ -18,12 +20,14 @@ below is the one to use when checking a number, a table or a figure.
 | Table V | Single-channel YOLO, four inputs + raw sum | `results/paper_tables/table_v_single_channel.csv` |
 | Table VI | Three-channel YOLO, four combinations | `results/paper_tables/table_vi_three_channel.csv` |
 | Table VII | Four YOLO variants, baseline vs `Pmv` | `results/paper_tables/table_vii_yolo.csv` |
+| Table VIII | Two-layer pixel extraction | `results/paper_tables/table_viii_two_layer.csv` |
+| Table IX | PSDD/IPSD cross-sensor AUC | `results/paper_tables/table_ix_cross_dataset.csv` |
 | IPSD check | Pmv 97.5%, Psmv 96.9%, one scalar calibration | `results/paper_tables/table_ipsd_balanced.json` |
 | Figures 1–6 | pipeline / schematic / dataset / teacher / SR / detector | `matlab/`, `src/`, manuscript assets |
 | Figure 7 | soft labels + teacher output | `scripts/01_teacher.py` outputs |
 | Figure 8 | Pareto front | `results/paper_tables/table_ii_pareto.csv` |
 | Figures 9–10 | representation comparison / ROC | `results/paper_tables/table_iv_pixel.csv`, `scripts/04_evaluate.py` |
-| Figures 11–14 | detection panels / PR curves | `results/paper_tables/table_v*`, `table_vi*`, `table_vii*` |
+| Figures 11–14 | detection panels / combined PR / two-layer decision | `results/paper_tables/table_v*`–`table_viii*` |
 | Figures 15–16 | soft-label / operator ablations | `scripts/02_search.py --target hard`, `--operators ...` |
 
 ## 2. Deliberate scope decisions
