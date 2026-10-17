@@ -1,7 +1,7 @@
 # Paper ↔ repository consistency (v75)
 
 This repository is aligned with the IEEE manuscript
-`paper/PolSAR_paper_English_v75_IEEE.pdf` (16 pages, 2026-10-17). The mapping
+`paper/PolSAR_paper_English_v75_IEEE.pdf` (14 pages, 2026-10-17). The mapping
 below is the one to use when checking a number, a table or a figure.
 
 ## 1. What the paper claims
@@ -19,7 +19,7 @@ The figure set is now the Chinese v93 set 1–16, including the combined PR figu
 | Table IV | Pixel accuracy/F1/AUC, 1:2 balanced sample | `results/paper_tables/table_iv_pixel.csv` |
 | Table V | Single-channel YOLO, four inputs + raw sum | `results/paper_tables/table_v_single_channel.csv` |
 | Table VI | Three-channel YOLO, four combinations | `results/paper_tables/table_vi_three_channel.csv` |
-| Table VII | Four YOLO variants, baseline vs `Pmv` | `results/paper_tables/table_vii_yolo.csv` |
+| Table VII | Four YOLO variants, baseline vs `Pmv` (P/R and mAP/F1 shown as pairs to fit the IEEE column; all values are in the CSV) | `results/paper_tables/table_vii_yolo.csv` |
 | Table VIII | Two-layer pixel extraction | `results/paper_tables/table_viii_two_layer.csv` |
 | Table IX | PSDD/IPSD cross-sensor AUC | `results/paper_tables/table_ix_cross_dataset.csv` |
 | IPSD check | Pmv 97.5%, Psmv 96.9%, one scalar calibration | `results/paper_tables/table_ipsd_balanced.json` |

@@ -170,7 +170,6 @@ archived.
 - Ultralytics: AGPL-3.0, used as an installed dependency; it is not vendored.
 - PSDD and IPSD: third-party datasets, not redistributed; follow their release
   terms.
-- Archived release: https://doi.org/10.6084/m9.figshare.33987049
 - Paper PDF/DOCX: `paper/`.
 
 ## Citation
