@@ -1,12 +1,12 @@
 # Paper ↔ repository consistency (v75)
 
 This repository is aligned with the IEEE manuscript
-`paper/PolSAR_paper_English_v75_IEEE.pdf` (14 pages, 2026-10-17). The mapping
+`paper/PolSAR_paper_English_v75_IEEE.pdf` (13 pages, 2026-10-17). The mapping
 below is the one to use when checking a number, a table or a figure.
 
 ## 1. What the paper claims
 
-The figure set is now the Chinese v93 set 1–16, including the combined PR figure (English Fig. 13) and the two-layer comparison (English Fig. 14). The English manuscript has 14 pages and nine tables.
+The figure set is now the Chinese v93 set 1–16, including the combined PR figure (English Fig. 13) and the two-layer comparison (English Fig. 14). The English manuscript has 13 pages and nine tables.
 
 | Paper item | Value / scope | Repository source |
 |---|---|---|

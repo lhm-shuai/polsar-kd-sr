@@ -3,7 +3,7 @@
 `PolSAR_paper_English_v75_IEEE.pdf` / `.docx` are the IEEE Transactions
 manuscript aligned with this repository.
 
-- 14 pages, IEEE two-column format.
+- 13 pages, IEEE two-column format.
 - Four YOLO variants (YOLOv8n, YOLOv11n, YOLOv12n, YOLO26).
 - `Pmv = exp(-c/(Pm+Pv))`, C=6; `Psmv = cos(A^2)`, C=13 reference (pixel-level only).
 - Tables II–IX are traceable to `results/paper_tables/`.
