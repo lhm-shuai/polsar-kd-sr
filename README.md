@@ -1,6 +1,6 @@
 # PolSAR Ship Detection by Knowledge-Distillation-Guided Symbolic Regression
 
-Reference implementation of the IEEE Transactions manuscript
+Reference implementation of the PolSAR KD-SR method (code and results only)
 
 > **Interpretable Polarimetric Scattering Representation for PolSAR Ship Detection via Knowledge-Distillation-Guided Symbolic Regression**
 
@@ -26,7 +26,7 @@ property is always visible.
 > (YOLOv8n, YOLOv11n, YOLOv12n, YOLO26) and four MMDetection detectors
 > (RetinaNet, Faster R-CNN, SSD, PAA). The controlled comparison is the
 > within-architecture replacement of `Pm` by `Pmv`; no broader architecture
-> generality is claimed. See `PAPER_CONSISTENCY.md`.
+> generality is claimed.
 
 ---
 
@@ -42,8 +42,7 @@ property is always visible.
 | `src/evaluate.py` | Sec. III-C | pixel metrics, ROC, raw-sum baseline, CFAR reference |
 | `src/detector.py` | Sec. III-D | sliced YOLO dataset + single-class training |
 | `results/mined_descriptor.txt` | Sec. II-B/III-B | the six-node descriptor and the C=29 reference |
-| `results/paper_tables/` | Tables I–IX | the exact numbers used in the manuscript |
-| `paper/` | — | the IEEE-formatted manuscript (PDF + DOCX) |
+| `results/paper_tables/` | Tables I–IX | the exact numbers used in the paper |
 
 ### Script → paper block
 
@@ -170,10 +169,8 @@ and 12 epochs with the official input scaling; their metrics are in
 - Ultralytics: AGPL-3.0, used as an installed dependency; it is not vendored.
 - PSDD and IPSD: third-party datasets, not redistributed; follow their release
   terms.
-- Paper PDF/DOCX: `paper/`.
 
 ## Citation
 
-If you use this code, please cite the IEEE manuscript. A machine-readable entry
-is in `CITATION.cff`. Earlier titles/abstracts are superseded by the IEEE
-manuscript in `paper/`.
+If you use this code, please cite the paper. A machine-readable entry is in
+`CITATION.cff`; update it with the final journal volume/pages when available.
