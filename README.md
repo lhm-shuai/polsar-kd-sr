@@ -1,10 +1,10 @@
-# PolSAR Ship Detection by Knowledge-Distillation-Guided Symbolic Regression
+# Feedback-Learning-Based Polarimetric Scattering Representation for PolSAR Ship Detection
 
 Reference implementation of the PolSAR KD-SR method (code and results only)
 
-> **Interpretable Polarimetric Scattering Representation for PolSAR Ship Detection via Knowledge-Distillation-Guided Symbolic Regression**
+> **Feedback-Learning-Based Polarimetric Scattering Representation for PolSAR Ship Detection**
 
-Haomiao Liu, Sinong Quan, and Zhihao Cai.
+Hao-Miao Liu, Si-Nong Quan, and Zhi-Hao Cai.
 
 The method distils a small multilayer-perceptron teacher into **closed-form
 scattering descriptors**. A lightweight teacher is trained on pixel-level hard
