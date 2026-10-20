@@ -1,8 +1,8 @@
-# Paper table sources (v97)
+# Paper table sources (v100)
 
 These files support the tables of the final manuscript
-(`08_论文/PolSAR_paper_English_v97_IEEE.docx`). The paper uses the C29 descriptor
-as Psmv and the eight-detector comparison.
+(`08_论文/PolSAR_paper_EN_投稿版_IEEE_v100_审查修订.docx`). The paper uses the C29
+descriptor as Psmv and the eight-detector comparison.
 
 | File | Paper table | Notes |
 |---|---|---|

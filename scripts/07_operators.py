@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Classic polarimetric operators on the paper's test tiles (Table VI).
+"""Classic polarimetric operators on the paper's test tiles (Table IV).
 
 Mapping tile -> full-scene pixels is the row-major 256/30 scan of the dataset
 builder (切片划分数据集一条龙.py) over the full-pol annotations, which was

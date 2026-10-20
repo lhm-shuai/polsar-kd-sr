@@ -1,10 +1,8 @@
 # Feedback-Learning-Based Polarimetric Scattering Representation for PolSAR Ship Detection
 
-Reference implementation of the PolSAR KD-SR method (code and results only)
+Reference implementation of the PolSAR KD-SR method (code and results only).
 
-> **Feedback-Learning-Based Polarimetric Scattering Representation for PolSAR Ship Detection**
-
-Hao-Miao Liu, Si-Nong Quan, and Zhi-Hao Cai.
+Haomiao Liu, Sinong Quan, and Zhihao Cai.
 
 The method distils a small multilayer-perceptron teacher into **closed-form
 scattering descriptors**. A lightweight teacher is trained on pixel-level hard
@@ -23,7 +21,7 @@ ranking of the pixels. The repository prints both `Pmv` and the raw sum so this
 property is always visible.
 
 > **Scope of the paper.** The detector comparison covers four YOLO variants
-> (YOLOv8n, YOLOv11n, YOLOv12n, YOLO26) and four MMDetection detectors
+> (YOLOv8, YOLOv11, YOLOv12, YOLO26) and four MMDetection detectors
 > (RetinaNet, Faster R-CNN, SSD, PAA). The controlled comparison is the
 > within-architecture replacement of `Pm` by `Pmv`; no broader architecture
 > generality is claimed.
@@ -42,21 +40,21 @@ property is always visible.
 | `src/evaluate.py` | Sec. III-C | pixel metrics, ROC, raw-sum baseline, CFAR reference |
 | `src/detector.py` | Sec. III-D | sliced YOLO dataset + single-class training |
 | `results/mined_descriptor.txt` | Sec. II-B/III-B | the six-node descriptor and the C=29 reference |
-| `results/paper_tables/` | Tables I–IX | the exact numbers used in the paper |
+| `results/paper_tables/` | Tables III–IX | the exact numbers used in the paper |
 
 ### Script → paper block
 
 | Script | Produces |
 |---|---|
 | `01_teacher.py` | teacher metrics, soft labels |
-| `02_search.py` | Pareto front / candidate expressions (Table II, Fig. 8) |
-| `03_seeds.py` | seed-stability study (Table III) |
-| `04_evaluate.py` | pixel-level comparison (Table IV, Figs. 9–10) |
-| `05_detector.py` | eight detectors (Tables V–VII, Figs. 11–14) |
-| `06_assist.py` | two-layer pixel extraction (Table VIII; auxiliary) |
-| `07_operators.py` | classic-operator comparison (auxiliary; not a main table) |
+| `02_search.py` | Pareto front / candidate expressions (Table III, Fig. 8); operator-set ablation (Fig. 16) |
+| `03_seeds.py` | seed-stability study (Sec. III-B, Fig. 8) |
+| `04_evaluate.py` | pixel-level comparison (Table IV, Fig. 10) |
+| `05_detector.py` | eight detectors (Tables VI–VII, Figs. 11–13) |
+| `06_assist.py` | two-layer pixel extraction (Table VIII, Fig. 14) |
+| `07_operators.py` | classic-operator rows of the pixel-level comparison (Table IV, Fig. 10) |
 | `08_transfer.py` | IPSD cross-sensor check (Table IX) with one scalar calibration |
-| `09_tcr.py` | target-to-clutter ratios (TCR paragraph, n=115) |
+| `09_tcr.py` | target-to-clutter ratios (Table V, n=115) |
 | `10_sizes.py` | parameter/FLOP/FPS inventory (auxiliary) |
 
 The four `ipsd_*` scripts re-derive the cross-dataset numbers under the
@@ -134,7 +132,7 @@ python scripts/02_search.py --features Pm,Pv --tag dual        # feature-subset 
 python scripts/02_search.py --operators arithmetic --tag ops_a
 python scripts/02_search.py --operators with_exp   --tag ops_b
 python scripts/02_search.py --operators full       --tag ops_c
-python scripts/03_seeds.py                                     # Table III
+python scripts/03_seeds.py                                     # Fig. 8 (five-seed stability)
 ```
 
 **Pixel-level evaluation.**
@@ -173,4 +171,4 @@ and 12 epochs with the official input scaling; their metrics are in
 ## Citation
 
 If you use this code, please cite the paper. A machine-readable entry is in
-`CITATION.cff`; update it with the final journal volume/pages when available.
+`CITATION.cff`; journal volume and page numbers will be added after publication.

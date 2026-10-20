@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Repeat the Stage III search over the five random seeds of Table II.
+"""Repeat the Stage III search over the five random seeds of Fig. 8.
 
     python scripts/03_seeds.py
 

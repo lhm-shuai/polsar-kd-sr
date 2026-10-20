@@ -4,7 +4,7 @@ components, the teacher, and the CFAR reference.
 
     python scripts/04_evaluate.py
 
-Produces the metric table of Table III on stdout and, next to the run, a CSV of
+Produces the metric table of Table IV on stdout and, next to the run, a CSV of
 ROC points for every method (the data behind the paper's ROC figures).
 
 Note on two baselines that are easy to leave out and should not be:
