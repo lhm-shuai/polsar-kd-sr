@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Descriptor-guided detection: the architectural part of Section II-C.
 
+Exploratory module, kept for reference only.  The manuscript's method replaces
+a detector input channel with the descriptor and fuses the two decision layers
+outside the network, so nothing here is exercised by the paper's results.
+
 The supervisor asked for a real structural contribution rather than "a detector
 plus a post-processing step".  Three small modules turn the explicit descriptor
 from a mere extra input channel into a guide inside the network:
