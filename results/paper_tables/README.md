@@ -12,7 +12,7 @@ descriptor as Psmv and the eight-detector comparison.
 | `table_v_single_channel.csv` | Table VI (single channel) | YOLOv8 single-channel inputs; values in percent. |
 | `table_vi_three_channel.csv` | Table VI (three channel) | YOLOv8 three-channel combinations; values in percent. |
 | `table_vii_yolo.csv` | Table VII | eight detectors: four YOLO variants plus RetinaNet, Faster R-CNN, SSD, and PAA. |
-| `table_viii_two_layer.csv` | Table VIII | two-layer pixel extraction; the four rows the paper reports. The 2026-10-28 revision removed the two pixel-branch rows (branch-free intelligent layer); the branch numbers stay in the reproduction package. |
+| `table_viii_two_layer.csv` | Table VIII | two-layer pixel extraction; the three rows the paper reports. The 2026-10-28/29 revision removed the two pixel-branch rows and merged the single/dual descriptor operating points into one (high threshold 128, low threshold 16). |
 | `table_ix_cross_dataset.csv` | Table IX | PSDD/IPSD AUC and IPSD operating-point metrics. |
 | `table_ipsd_balanced.json` | Cross-dataset paragraph | IPSD balanced-set scores; one scalar calibration. |
 | `detector_revalidation.csv` | raw source | YOLO runs, including the raw-sum row `PmPv_raw`. |
