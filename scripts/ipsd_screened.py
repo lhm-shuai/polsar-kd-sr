@@ -25,7 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "gapfill"))
 from yamaguchi import c3_to_t3, yamaguchi4_mode0          # noqa: E402
 
-IPSD = r"D:\雷达\数据库\IPSD"
+IPSD = os.environ.get("IPSD_ROOT", os.path.join(HERE, "..", "data", "IPSD"))
 OUT = os.path.join(HERE, "analysis", "out", "ipsd_screened.json")
 REF = 1.244077813118314e-3
 C = 0.21

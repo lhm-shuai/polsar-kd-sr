@@ -30,8 +30,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "gapfill"))
 from yamaguchi import c3_to_t3, yamaguchi4_mode0          # noqa: E402
 
-PSDD = r"D:\雷达\数据库\PSDDv1.0"
-IPSD = r"D:\雷达\数据库\IPSD"
+PSDD = os.environ.get("PSDD_ROOT", os.path.join(HERE, "..", "data", "PSDDv1.0"))
+IPSD = os.environ.get("IPSD_ROOT", os.path.join(HERE, "..", "data", "IPSD"))
 OUT = os.path.join(HERE, "analysis", "out", "ipsd_operating_point.json")
 C = 0.21
 GUARD = 8

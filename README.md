@@ -99,6 +99,9 @@ data/IPSD/                IPSD transfer set
 work/                     pipeline output
 ```
 
+The auxiliary `ipsd_*` scripts read `PSDD_ROOT` and `IPSD_ROOT`, defaulting to
+`data/PSDDv1.0` and `data/IPSD`.
+
 ## Reproducing the paper
 
 **Stage I: decomposition and labels (MATLAB).** Run
