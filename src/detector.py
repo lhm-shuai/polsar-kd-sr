@@ -1,8 +1,9 @@
 """Detection stage: build the sliced dataset, then train a detector on it.
 
 The paper's detector experiments use Ultralytics for the YOLO family and
-MMDetection for RetinaNet / SSD / PAA / Faster R-CNN. Both are ordinary
-third-party trainers driven from here; nothing in this file reimplements them.
+MMDetection for RetinaNet / SSD / PAA / Faster R-CNN. This file drives the
+YOLO dataset builder and training. The MMDetection metrics and run records are
+archived in results/paper_tables.
 
 Two things to be aware of when you run this:
 
@@ -173,6 +174,7 @@ def train_detector(cfg: dict, data_yaml: str, model: str | None = None,
         single_cls=dcfg["single_cls"],
         device=dcfg["device"],
         seed=dcfg["seed"],
+        pretrained=bool(dcfg.get("pretrained", True)),
         name=name or os.path.splitext(os.path.basename(model))[0],
     )
 

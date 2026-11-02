@@ -10,7 +10,7 @@
     # the [Pm, Pv] feature-subset ablation
     python scripts/02_search.py --target soft --features Pm,Pv --tag dual_feature
 
-    # the operator-set ablation behind Fig. 14
+    # the operator-set ablation behind Fig. 15
     python scripts/02_search.py --operators arithmetic --tag ops_arithmetic
     python scripts/02_search.py --operators with_exp   --tag ops_with_exp
     python scripts/02_search.py --operators full       --tag ops_full

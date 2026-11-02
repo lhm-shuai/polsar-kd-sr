@@ -3,7 +3,7 @@ the CFAR reference.
 
 Everything is scored the same way: ROC over the test pixels, threshold taken at
 the Youden point (argmax of TPR - FPR), then accuracy and F1 at that threshold.
-That is the protocol behind Table III and the ROC panels of Fig. 8.
+That is the protocol behind Table IV and the ROC panels of Fig. 9.
 """
 from __future__ import annotations
 
@@ -27,17 +27,16 @@ def pmv(Ps, Pm, Pv):
 
 
 def psmv(Ps, Pm, Pv):
-    """The paper's C=29 high-complexity reference descriptor (Sec. III-C).
+    """The paper's complexity-29 descriptor, reported as Psmv (Sec. III-C).
 
     With A = exp( (-0.72197366 - Ps) * Pv ) / ( Pm^2 + 1.0250757 ):
 
         B = sin(sin(sin(cos(A^8 + 0.48293668))))
         Psmv = [ B^2 / (0.61469054 * 0.49011374) ]^8
 
-    This is the C=29 point of the seed-666 Pareto front and the expression
-    behind the paper's Table IV row "Psmv (C=29, ref.)" (accuracy 95.34%,
-    AUC 0.9867).  It is reported only as a pixel-level reference and is not
-    used in the detector experiments.
+    This is the complexity-29 point of the seed-666 Pareto front and the
+    expression behind the Psmv row of Table IV (AUC 98.7%).
+    It is also used as a high-complexity detector input.
     """
     A = np.exp(Pv * (-0.72197366 - Ps)) / (np.square(Pm) + 1.0250757)
     t = np.cos(np.square(np.square(np.square(A))) + 0.48293668)
@@ -45,17 +44,6 @@ def psmv(Ps, Pm, Pv):
     t = np.sin(np.sin(t))
     t = np.square(t) / 0.49011374
     return np.power(np.sin(t), 8)
-
-
-def psmv_c13(Ps, Pm, Pv):
-    """Legacy C=13 reference, retained only for traceability."""
-    inner = np.exp((-0.6271455 - Ps) * Pv) / (np.square(Pm) + 0.7921049)
-    return np.cos(np.square(inner))
-
-
-def psmv_c29_legacy(Ps, Pm, Pv):
-    """Alias of psmv (C=29) kept for backward compatibility."""
-    return psmv(Ps, Pm, Pv)
 
 
 def cfar_score(image, guard_win=3, bg_win=10, pfa=1e-4):
@@ -101,7 +89,7 @@ def score(y_true, y_score):
 
 
 def evaluate_all(X_test, y_test, teacher_pred, include_cfar_image=None):
-    """Metric table for every method compared in Table III."""
+    """Metric table for the methods compared in Table IV."""
     Ps, Pm, Pv = X_test[:, 0], X_test[:, 1], X_test[:, 2]
     methods = {
         "Ps": Ps,

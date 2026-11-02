@@ -3,10 +3,10 @@
 One entry point covers all four settings used in the paper, because they differ
 only in what is fitted and which operators are allowed:
 
-    target="soft"  operators="full"    -> the main result (Section III-B/III-C)
+    target="soft"  operators="full"    -> the main result (Sec. II-B/III-B)
     target="soft"  operators="dual"    -> [Pm, Pv] feature-subset ablation
-    target="hard"  operators="full"    -> Direct-SR ablation (Section III-E)
-    target="soft"  operators=<set>     -> operator-set ablation (Fig. 14)
+    target="hard"  operators="full"    -> Direct-SR ablation (Sec. IV-B)
+    target="soft"  operators=<set>     -> operator-set ablation (Fig. 15)
 
 Both the KD and the Direct-SR searches optimise the same bi-objective problem:
 fitting error against expression size. The Pareto front is what is returned.
@@ -18,7 +18,7 @@ import os
 import numpy as np
 from pysr import PySRRegressor
 
-# the three operator sets behind Fig. 14
+# the three operator sets behind Fig. 15
 OPERATOR_SETS = {
     "arithmetic": {"binary": ["+", "-", "*", "/"], "unary": []},
     "with_exp": {"binary": ["+", "-", "*", "/"], "unary": ["exp"]},

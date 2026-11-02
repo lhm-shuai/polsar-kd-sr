@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Target-to-clutter ratio of every representation (Table V).
+"""Target-to-clutter ratio of every representation (values cited in Sec. III-C).
 
 TCR is the metric the group's TGRS paper reports per scene (their Table I), and
 it is the quantitative form of this paper's qualitative claim that the mined

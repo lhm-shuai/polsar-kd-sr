@@ -2,15 +2,16 @@ cff-version: 1.2.0
 message: "If you use this code, please cite the paper."
 title: "Feedback-Learning-Based Polarimetric Scattering Representation for PolSAR Ship Detection"
 abstract: >-
-  Reference implementation of a feedback-learning pipeline for PolSAR ship
-  detection: a lightweight MLP teacher distils pixel-level hard labels into a
-  continuous ship-membership surface, and an evolutionary symbolic-regression
-  student fits a closed-form polarimetric descriptor under an explicit
-  accuracy-complexity trade-off. The repository covers the six-node descriptor,
-  the eight-detector comparison, the operator and soft-label ablations, and the
-  IPSD cross-sensor check with one scalar calibration.
-version: "v100"
-date-released: "2026-10-20"
+  Code and result tables for a feedback-learning pipeline for PolSAR ship
+  detection. A multilayer-perceptron teacher converts pixel-level hard labels
+  into continuous ship membership, and a symbolic-regression search fits a
+  closed-form polarimetric descriptor under an accuracy-complexity trade-off.
+  The repository covers the complexity-6 and complexity-29 descriptors, the
+  eight-detector comparison, the pixel-level and target-to-clutter analyses,
+  the soft-label and operator-set ablations, the two-layer box refinement, and
+  the zero-training transfer to IPSD with one scalar calibration.
+version: "v1.1"
+date-released: "2026-11-02"
 authors:
   - family-names: Liu
     given-names: Haomiao
@@ -31,4 +32,4 @@ keywords:
   - ship detection
   - symbolic regression
   - knowledge distillation
-  - interpretability
+  - explicit descriptor

@@ -5,18 +5,18 @@ For every test image the script
 
   1. runs the detector trained on [P_mv, P_v, P_s] and keeps its boxes
      (the intelligent layer),
-  2. refines each box with the explicit descriptor P_mv >= T_d, 8-connected
-     components and the minimum area A_min (the general layer),
+  2. refines each box with the two-step descriptor rule: seeds above T_high,
+     growth to T_low, 8-connected components, and the minimum area A_min,
+     which form the general layer,
   3. evaluates mAP@0.5 for the detector alone and for the refined pipeline.
 
 Usage:
     python scripts/06_assist.py --config configs/default.yaml \
         --weights runs/detect/pmv/weights/best.pt --split test
 
-The descriptor map of an image is P_mv = exp(-c / (P_m + P_v)) computed from the
-Yamaguchi components, so no extra training is involved.  T_d and A_min are read
-from the config (they are fixed on the training set: T_d by the Youden criterion
-and A_min as the smallest annotated ship area).
+The descriptor map of an image is P_mv = exp(-c / (P_m + P_v)) on the 0-255
+scale used by the paper. No extra training is involved. T_high, T_low, and
+A_min are read from the assisted-detection block of the config.
 """
 from __future__ import annotations
 
@@ -32,10 +32,10 @@ from src.assist import average_precision, refine_detections      # noqa: E402
 
 
 def descriptor_map(components: np.ndarray, c: float) -> np.ndarray:
-    """P_mv = exp(-c / (P_m + P_v)) from a (..., 3) = (P_m, P_v, P_s) array."""
+    """P_mv on the 0-255 scale, from a (..., 3) = (P_m, P_v, P_s) array."""
     pm, pv = components[..., 0], components[..., 1]
     s = np.maximum(pm + pv, 1e-9)
-    return np.exp(-c / s)
+    return 255.0 * np.exp(-c / s)
 
 
 def load_split(cfg: dict, split: str):
@@ -72,8 +72,10 @@ def main() -> int:
     with open(args.config) as fh:
         cfg = yaml.safe_load(fh)
     c = float(cfg['assist']['c'])
-    t_d = float(cfg['assist']['threshold'])
+    t_hi = float(cfg['assist']['high_threshold'])
+    t_lo = float(cfg['assist']['low_threshold'])
     a_min = int(cfg['assist']['min_area'])
+    keep = bool(cfg['assist'].get('keep_unrefined', False))
 
     try:
         from ultralytics import YOLO
@@ -88,7 +90,8 @@ def main() -> int:
         res = model.predict(img_path, conf=args.conf, verbose=False)[0]
         boxes = res.boxes.xyxy.cpu().numpy() if res.boxes is not None else np.zeros((0, 4))
         scores = res.boxes.conf.cpu().numpy() if res.boxes is not None else np.zeros((0,))
-        rb, rs = refine_detections(desc, boxes, scores, t_d, a_min)
+        rb, rs = refine_detections(desc, boxes, scores, t_hi, t_lo, a_min,
+                                   keep_unrefined=keep)
         preds_raw.append({'boxes': [tuple(b[:4]) for b in boxes], 'scores': list(scores)})
         preds_ref.append({'boxes': rb, 'scores': rs})
         gts.append({'boxes': gt})

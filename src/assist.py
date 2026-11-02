@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 """Intelligent-assists-general detection.
 
-The intelligent layer (a learned detector on [P_mv, P_v, P_s]) proposes boxes;
-the general layer then extracts the ship pixels inside each box with the
-explicit descriptor of Section II-B.  The extraction is a threshold on the
-descriptor followed by 8-connected components and an area filter, so it needs
-no training and every decision it makes can be reviewed.
+The intelligent layer (a detector trained on [P_mv, P_v, P_s]) proposes boxes.
+The generic layer then refines each box with the explicit descriptor:
 
-Refining a detection:
-    mask  = (P_mv >= T_d) inside the box
-    comps = 8-connected components of mask
-    keep  = largest component with |comp| >= A_min
-    box'  = bounding box of keep          (drop the detection if none)
+    seed = (P_mv >= T_high) inside the box
+    grow = (P_mv >= T_low) connected to the seed by 8-neighborhood dilation
+    components of grow with area >= A_min form the in-box decision
+    box' = bounding box of those components
 
-Both the descriptor threshold T_d and the minimum area A_min are fixed on the
-training set (T_d by the Youden criterion, A_min by the smallest annotated
-ship in the training set), so the refinement introduces no learned parameter.
+The high threshold selects strong ship cores, and the low threshold recovers
+weak returns attached to them. Components without a strong core, and components
+below the area floor, are discarded. The rule has no learned parameter; T_high,
+T_low, and A_min come from `configs/default.yaml`.
 """
 from __future__ import annotations
 
@@ -31,6 +28,7 @@ except Exception:                      # pragma: no cover
 
 
 Box = Tuple[float, float, float, float]          # x1, y1, x2, y2
+S8 = np.ones((3, 3), dtype=int)
 
 
 @dataclass
@@ -41,48 +39,48 @@ class Refined:
     area: int
 
 
-def _largest_component(mask: np.ndarray) -> np.ndarray:
-    """Largest 8-connected component of a boolean mask."""
-    if not mask.any():
-        return mask
+def _components(mask: np.ndarray) -> tuple[np.ndarray, int]:
     if ndi is not None:
-        lab, n = ndi.label(mask, structure=np.ones((3, 3), dtype=int))
-        if n <= 1:
-            return mask
-        sizes = ndi.sum(mask, lab, index=range(1, n + 1))
-        return lab == (int(np.argmax(sizes)) + 1)
+        lab, n = ndi.label(mask, structure=S8)
+        return lab, int(n)
     # BFS fallback
     h, w = mask.shape
-    seen = np.zeros_like(mask, dtype=bool)
-    best, best_size = None, -1
+    lab = np.zeros_like(mask, dtype=int)
+    n = 0
     for y0 in range(h):
         for x0 in range(w):
-            if not mask[y0, x0] or seen[y0, x0]:
+            if not mask[y0, x0] or lab[y0, x0]:
                 continue
-            stack, comp = [(y0, x0)], []
-            seen[y0, x0] = True
+            n += 1
+            stack = [(y0, x0)]
+            lab[y0, x0] = n
             while stack:
                 y, x = stack.pop()
-                comp.append((y, x))
                 for dy in (-1, 0, 1):
                     for dx in (-1, 0, 1):
                         yy, xx = y + dy, x + dx
-                        if 0 <= yy < h and 0 <= xx < w and mask[yy, xx] and not seen[yy, xx]:
-                            seen[yy, xx] = True
+                        if 0 <= yy < h and 0 <= xx < w and mask[yy, xx] and not lab[yy, xx]:
+                            lab[yy, xx] = n
                             stack.append((yy, xx))
-            if len(comp) > best_size:
-                best_size, best = len(comp), comp
-    out = np.zeros_like(mask, dtype=bool)
-    for y, x in best:
-        out[y, x] = True
-    return out
+    return lab, n
 
 
-def refine_box(descriptor: np.ndarray, box: Box, threshold: float,
-               min_area: int) -> Refined:
-    """Tighten one detector box with the explicit descriptor.
+def _keep_components(mask: np.ndarray, min_area: int) -> np.ndarray:
+    lab, n = _components(mask)
+    if n == 0:
+        return np.zeros_like(mask, dtype=bool)
+    areas = np.bincount(lab.ravel())
+    keep = [i for i in range(1, n + 1) if areas[i] >= min_area]
+    if not keep:
+        return np.zeros_like(mask, dtype=bool)
+    return np.isin(lab, keep)
 
-    `descriptor` is the P_mv map of the image, values in [0, 1].
+
+def refine_box(descriptor: np.ndarray, box: Box, high_threshold: float,
+               low_threshold: float, min_area: int) -> Refined:
+    """Tighten one detector box with the two-step descriptor rule.
+
+    `descriptor` is the P_mv map on the 0-255 scale used by the paper.
     """
     x1, y1, x2, y2 = (int(round(v)) for v in box)
     h, w = descriptor.shape
@@ -90,24 +88,34 @@ def refine_box(descriptor: np.ndarray, box: Box, threshold: float,
     y1, y2 = max(0, min(y1, h)), max(0, min(y2, h))
     if x2 <= x1 or y2 <= y1:
         return Refined(box, 0.0, False, 0)
-    window = descriptor[y1:y2, x1:x2] >= threshold
-    comp = _largest_component(window)
+    crop = descriptor[y1:y2, x1:x2]
+    seed = crop >= high_threshold
+    if not seed.any():
+        return Refined(box, 0.0, False, 0)
+    low = crop >= low_threshold
+    if ndi is not None:
+        grow = low & ndi.binary_dilation(seed, structure=S8, iterations=3)
+    else:
+        grow = seed
+    comp = _keep_components(grow, min_area)
     area = int(comp.sum())
-    if area < min_area:
-        return Refined(box, 0.0, False, area)
+    if area == 0:
+        return Refined(box, 0.0, False, 0)
     ys, xs = np.nonzero(comp)
     new_box = (x1 + float(xs.min()), y1 + float(ys.min()),
                x1 + float(xs.max()) + 1.0, y1 + float(ys.max()) + 1.0)
-    return Refined(new_box, float(descriptor[y1:y2, x1:x2][comp].mean()), True, area)
+    return Refined(new_box, float(crop[comp].mean()), True, area)
 
 
 def refine_detections(descriptor: np.ndarray, boxes: Sequence[Sequence[float]],
-                      scores: Sequence[float], threshold: float,
-                      min_area: int, keep_unrefined: bool = True) -> Tuple[list, list]:
+                      scores: Sequence[float], high_threshold: float,
+                      low_threshold: float, min_area: int,
+                      keep_unrefined: bool = False) -> Tuple[list, list]:
     """Refine a whole image; returns (boxes, scores) for the next evaluation."""
     out_b, out_s = [], []
     for b, s in zip(boxes, scores):
-        r = refine_box(descriptor, tuple(b[:4]), threshold, min_area)
+        r = refine_box(descriptor, tuple(b[:4]), high_threshold,
+                       low_threshold, min_area)
         if r.kept:
             out_b.append(r.box)
             out_s.append(float(s))          # the detector score is kept

@@ -1,23 +1,28 @@
 # Paper table sources
 
-These files support the tables of the final manuscript
-(`08_论文/1_updated.docx`, the 2026-10-28 revision). The paper uses the C29
-descriptor as Psmv and the eight-detector comparison.
+These files contain the values used in the manuscript. The paper has seven
+content tables (I–VII); the CSV names retain their earlier numbering, and the
+mapping below is the authoritative one.
 
-| File | Paper table | Notes |
+| File | Paper item | Notes |
 |---|---|---|
-| `table_ii_pareto.csv` | Table III / search front | full seed-666 Pareto front; complexity 6 is the selected Pmv; complexity 29 is the canonical Psmv (C29). The C13 row is an intermediate Pareto point, not Psmv. |
-| `table_iii_seeds.csv` | Sec. III-B stability | five official seeds (42, 123, 211, 666, 789); seeds 456 and 1024 were excluded from the paper and are archived outside this repository. |
-| `table_iv_pixel.csv` | Table IV | pixel-level evaluation including the teacher and raw-sum rows; the paper reports the 12-method comparison subset. |
-| `table_v_single_channel.csv` | Table VI (single channel) | YOLOv8 single-channel inputs; values in percent. |
-| `table_vi_three_channel.csv` | Table VI (three channel) | YOLOv8 three-channel combinations; values in percent. |
-| `table_vii_yolo.csv` | Table VII | eight detectors: four YOLO variants plus RetinaNet, Faster R-CNN, SSD, and PAA. |
-| `table_viii_two_layer.csv` | Table VIII | two-layer pixel extraction; the three rows the paper reports. The 2026-10-28/29 revision removed the two pixel-branch rows and merged the single/dual descriptor operating points into one (high threshold 128, low threshold 16). |
-| `table_ix_cross_dataset.csv` | Table IX | PSDD/IPSD AUC and IPSD operating-point metrics. |
-| `table_ipsd_balanced.json` | Cross-dataset paragraph | IPSD balanced-set scores; one scalar calibration. |
-| `detector_revalidation.csv` | raw source | YOLO runs, including the raw-sum row `PmPv_raw`. |
-| `mmdet_revalidation.csv` | raw source | RetinaNet/Faster R-CNN/SSD/PAA runs with checkpoint paths. |
+| `table_ii_pareto.csv` | Table III, Fig. 7 | seed-666 Pareto front; complexity 6 is `Pmv`; complexity 29 is `Psmv` |
+| `table_iii_seeds.csv` | Fig. 7 | five official seeds (42, 123, 211, 666, 789) |
+| `table_iv_pixel.csv` | Table IV | 12 methods on PSDD and IPSD; PSDD and IPSD metrics side by side |
+| `table_v_single_channel.csv` | Table V | YOLOv8 single-channel inputs |
+| `table_vi_three_channel.csv` | Table V | YOLOv8 three-channel combinations |
+| `table_vii_yolo.csv` | Table VI | eight detectors, baseline and descriptor input |
+| `table_viii_two_layer.csv` | Table VII | three two-layer schemes reported in the paper |
+| `table_ipsd_balanced.json` | Table IV, Fig. 9(b) | IPSD balanced-set scores and the scalar calibration |
+| `detector_revalidation.csv` | source | YOLO runs, including the raw-sum row `PmPv_raw` |
+| `mmdet_revalidation.csv` | source | RetinaNet, Faster R-CNN, SSD, and PAA runs with checkpoint paths |
 
-The paper's Table V (target-to-clutter ratio) is produced by `scripts/09_tcr.py`;
-the corresponding per-run values are kept with the reproduction package rather
-than duplicated here.
+The detector tables use the same runs as the paper. The YOLO family was
+initialized from COCO-pretrained weights; the MMDetection networks use the
+official configurations. `table_iv_pixel.csv` reports the 12-method comparison
+that appears in the paper. The raw-sum detector run used for the rank check is
+kept in `detector_revalidation.csv` as `PmPv_raw`.
+
+TCR values are cited in Sec. III-C and produced by `scripts/09_tcr.py`; the
+per-run values are kept with the reproduction package rather than duplicated
+here.

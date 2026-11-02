@@ -2,7 +2,7 @@
 #
 # Every value here is the value the experiments in the paper used. The PySR
 # block was read back from the archived PySRRegressor checkpoint of the run
-# behind Fig. 7 and Table I, not retyped from the manuscript.
+# behind Table III and Fig. 7.
 
 # --------------------------------------------------------------------------- #
 # Paths. Point these at your own copy of the PSDD dataset and at a scratch dir.
@@ -82,9 +82,8 @@ symbolic_regression:
   batch_size: 500
   procs: 8
   random_state: 666
-  # the five seeds reported in Table III.  Two additional seeds (456, 1024)
-  # converged to a different local optimum (AUC 0.9598) and are documented in
-  # PAPER_CONSISTENCY.md; they are not used for the reported descriptor.
+  # the five seeds reported in Fig. 7. Two additional exploratory seeds
+  # converged to a different local optimum and are not used for the descriptor.
   seeds: [42, 123, 211, 666, 789]
 
 # --------------------------------------------------------------------------- #
@@ -92,7 +91,8 @@ symbolic_regression:
 # --------------------------------------------------------------------------- #
 detector:
   data_yaml: configs/detector_data.yaml
-  model: yolov8n.yaml          # trained from the YAML, no COCO initialization
+  model: yolov8n.yaml          # architecture; COCO weights are loaded by pretrained
+  pretrained: true             # initialize from COCO-pretrained weights
   epochs: 300                  # three-channel; 200 for single-channel
   imgsz: 640
   batch: 8
@@ -100,16 +100,15 @@ detector:
   single_cls: true
   device: 0
   seed: 0
-  # The final paper compares four YOLO variants only.  The earlier
-  # MMDetection one/two-stage rows were removed from the manuscript because
-  # their final training logs were not archived; no cross-family generality
-  # is claimed.  See PAPER_CONSISTENCY.md.
+  # The paper compares four YOLO variants and four MMDetection detectors.
   architectures:
-    single_stage: [yolov8n.yaml, yolov11n.yaml, yolov12n.yaml, yolo26.yaml]
+    yolo: [yolov8n.yaml, yolo11n.yaml, yolo12n.yaml, yolo26n.yaml]
+    mmdet: [retinanet_r50_fpn, faster_rcnn_r50_fpn, ssd300, paa_r50_fpn]
 
 # --- intelligent-assists-general detection (Section II-C) --------------
 assist:
   c: 0.21                 # fitted constant of the descriptor
-  threshold: 0.55         # T_d, chosen on the training set by the Youden criterion
-  min_area: 12            # A_min, smallest annotated ship area in the training set
-  keep_unrefined: true    # fall back to the detector box when the mask is empty
+  high_threshold: 128     # T_high on the 0-255 descriptor scale
+  low_threshold: 16       # T_low on the 0-255 descriptor scale
+  min_area: 4             # A_min, smallest accepted in-box component
+  keep_unrefined: false   # drop boxes without a descriptor component

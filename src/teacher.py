@@ -6,7 +6,7 @@ parameters. Trained with binary cross-entropy, Adam, learning rate 1e-3, batch
 accuracy. The continuous output of the retained model is what Stage III fits.
 
 Every number here matches the reported experiment; the architecture and the
-checkpoint rule are the ones described in Section II-B.
+checkpoint rule are the ones described in Sec. II-A.
 """
 from __future__ import annotations
 
