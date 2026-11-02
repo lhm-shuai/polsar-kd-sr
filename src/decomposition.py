@@ -2,9 +2,9 @@
 """Yamaguchi four-component decomposition (mode 0, deorientation only), ported
 line by line from the reference MATLAB implementation:
 
-  D:\\雷达\\数据库\\yamaguchi_4components_T3.m   (Sinong Quan, 2016)
-  D:\\雷达\\数据库\\unitary_rotation.m
-  D:\\雷达\\数据库\\C3_T3.m
+  matlab/yamaguchi_4components_T3.m   (Sinong Quan, 2016)
+  and the companion unitary_rotation.m source
+  matlab/utils/C3_T3.m
 
 mode 0 = deorientation by the polarization orientation angle, HV_type fixed to
 1 (volume + double bounce dominant), then the Yamaguchi four-component branch
